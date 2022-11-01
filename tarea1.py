@@ -1,8 +1,86 @@
 import os, pandas as pd
+from numpy import append
+
+
+class Libro:
+    __id :str
+    __titulo : str
+    __genero = str
+    __isbn : str
+    __editorial : str
+    __autor : list
+
+    def __init__(self,id,titulo,genero,isbn,editorial) -> None:
+        self.__id = id
+        self.__titulo = titulo
+        self.__genero = genero
+        self.__isbn = isbn
+        self.__editorial = editorial
+
+    @property
+    def id(self):
+        return self.__id
+    @id.setter
+    def id(self, id: str):
+        self.__id = id
+
+    @property
+    def titulo(self):
+        return self.__titulo
+    @titulo.setter
+    def titulo(self, titulo: str):
+        self.__titulo = titulo
+
+    @property
+    def genero(self):
+        return self.__genero
+    @genero.setter
+    def titulo(self, genero: str):
+        self.__genero = genero
+
+    @property
+    def isbn(self):
+        return self.__isbn
+    @isbn.setter
+    def isbn(self, isbn: str):
+        self.__isbn = isbn
+    
+    @property
+    def editorial(self):
+        return self.__editorial
+    @editorial.setter
+    def editorial(self, editorial: str):
+        self.__editorial = editorial
+
+    @property
+    def autor(self):
+        return self.__autor  
+    @autor.setter
+    def autor(self, autor):
+        self.__autor = autor
+
+    def __del__(self):
+        pass
+
+
+for i in range(3):
+    a = Libro("001","ABCtitulo","comedia","00123","santillana")
+    listalibros =[]
+listalibros.append(a)
 
 
 
 
+def ord_por_titulo(list_libros : list):
+    list_ordenada = []
+    for i in list_libros:
+        list_ordenada.append(i)
+    
+    return list_ordenada
+listafinal = ord_por_titulo(listalibros)
+
+for i in listafinal:
+    print(i)
 
 
 
