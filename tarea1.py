@@ -30,52 +30,55 @@ def menu_principal():
         print ("Elige una opcion :")
         opcion = pedirNumeroEntero()
         return opcion
-while True:
-    opcion = menu_principal()
-    if opcion == 1:
-        os.system('cls')
-        print ("Opcion 1")   
-        os.system('pause')
-    elif opcion == 2:
-        os.system('cls')
-        print ("Opcion 2")
-        os.system('pause')
-    elif opcion == 3:
-        os.system('cls')
-        print("Opcion 3")
-        os.system('pause')
-    elif opcion == 4:
-        os.system('cls')
-        print("Opcion 4")
-        os.system('pause')
-    elif opcion == 5:
-        os.system('cls')
-        print("Opcion 5")
-        os.system('pause')
-    elif opcion == 6:
-        os.system('cls')
-        print("Opcion 6")
-        os.system('pause')
-    elif opcion == 7:
-        os.system('cls')
-        print("Opcion 7")
-        os.system('pause')
-    elif opcion == 8:
-        os.system('cls')
-        print("Opcion 8")
-        os.system('pause')
-    elif opcion == 9:
-        os.system('cls')
-        print("Opcion 9")
-        os.system('pause')
-    elif opcion == 10:
-        os.system('cls')
-        print("Opcion 10")
-        os.system('pause') 
-    elif opcion == 11:
-        print("SALIR")
-        break       
-    else:
-        os.system('cls')
-        print("Ingresa un nuevo numero :")
-        
+def main():
+    while True:
+        opcion = menu_principal()
+        if opcion == 1:
+            os.system('cls')
+            print ("Opcion 1")   
+            os.system('pause')
+        elif opcion == 2:
+            os.system('cls')
+            print ("Opcion 2")
+            os.system('pause')
+        elif opcion == 3:
+            os.system('cls')
+            print("Opcion 3")
+            os.system('pause')
+        elif opcion == 4:
+            os.system('cls')
+            print("Opcion 4")
+            os.system('pause')
+        elif opcion == 5:
+            os.system('cls')
+            print("Opcion 5")
+            os.system('pause')
+        elif opcion == 6:
+            os.system('cls')
+            print("Opcion 6")
+            os.system('pause')
+        elif opcion == 7:
+            os.system('cls')
+            print("Opcion 7")
+            os.system('pause')
+        elif opcion == 8:
+            os.system('cls')
+            print("Opcion 8")
+            os.system('pause')
+        elif opcion == 9:
+            os.system('cls')
+            print("Opcion 9")
+            os.system('pause')
+        elif opcion == 10:
+            os.system('cls')
+            print("Opcion 10")
+            os.system('pause') 
+        elif opcion == 11:
+            print("SALIR")
+            break       
+        else:
+            os.system('cls')
+            print("Ingresa un nuevo numero :")
+    
+if __name__ == '__main__':
+    main()
