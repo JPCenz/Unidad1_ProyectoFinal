@@ -95,7 +95,8 @@ def abrir_archivo(file ="libros.csv" )-> list[Libro]:
         return lista_libros
     except Exception as ex:
         print(ex)
-
+        
+#Recibe una lista de Libros y escribe los datos en un archivo .csv
 def escribir_archivo(Libros: list[Libro],file='libros_guardados.csv')-> None :
     try:
         with open(file, 'w',newline='') as f:

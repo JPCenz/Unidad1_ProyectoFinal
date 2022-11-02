@@ -1,4 +1,13 @@
-import os, requests
+import os, requests,time
+
+#Recibe la cantidad en segundos de espera 
+def mostrar_mensaje_espera(segundos=5):
+    #importar libreria time
+    print("Espere mientras se obtiene la informacion del servidor")
+    for i in range(segundos):        
+        print(" -- ",end=" ",flush=True)
+        time.sleep(1)
+    print("")
 
 def opcion1():
 
@@ -178,11 +187,62 @@ def opcion4():
                                 print(f'{count}> Pokemon: {i} >Habilidades: {j} >Url_img: {k}')
                     break
                 else:
-                    print('Ingrese una habilidad aceptable [1-9]: ')
+                    print('Ingrese un habitat aceptable [1-9]: ')
             else:
                 print('Ingrese una habilidad aceptable [1-9]: ')
     except Exception as ex:
         print(ex)
+
+def buscar_por_tipo(tipo: str):
+    try:
+        res = requests.get(f'https://pokeapi.co/api/v2/type/{tipo}')
+        res.raise_for_status()
+        data = res.json()
+        count_encontrados = 0
+        url_pokemon=[]
+        contador = 0
+        for i in data['pokemon']:
+            url_pokemon.append(i['pokemon']['url'])
+            count_encontrados = count_encontrados + 1      
+        print(f"Se encontraron {count_encontrados} pokemones")
+        mostrar_mensaje_espera(5)
+        for url in url_pokemon:
+            res1=requests.get(url)
+            res1.raise_for_status()
+            data = res1.json()
+            nombre = data['name']
+            habilidades= []
+            imagen : str 
+            if data['sprites']["front_default"] == None:
+                imagen = "No esta disponible la url"
+            else:
+                imagen =data['sprites']["front_default"]
+            for i in data['abilities']:
+                habilidades.append(i['ability']['name'])
+            contador = contador + 1       
+            # print("----------------------------------------------------------------------------------")
+            print(f"{contador}.  POKE:{nombre}, Habilidades:{habilidades}, Imagen: {imagen}")
+            print("-------------------------------------------------------------------------------------")        
+        print(f"Se Mostraron: {contador} POKEMONES")
+    except Exception as ex:
+        print(ex)
+#Pide al usuario ingresar el tipo de pokemon, invoca a la funcion buscar_por_tipo 
+def opcion5():
+    tipos =['normal','fighting','flying','poison','ground','rock','bug','ghost','steel','fire',
+    'water','grass','electric','psychic','ice','dragon','dark','fairy']
+    print("=================== Tipo de pokemones ====================")
+    print(str(tipos))
+    tipo = True
+    while tipo not in tipos:
+        tipo = input("Ingrese un tipo de pokemon o presione enter para salir:")
+        if tipo == '':
+            break
+        if tipo in tipos:
+            buscar_por_tipo(tipo)
+        else:
+            print("Tipo no valido")
+
+
 
 
 def pedirNumeroEntero():
@@ -236,6 +296,7 @@ def main():
         elif opcion == 5:
             os.system('cls')
             print("Opcion 5")
+            opcion5()
             os.system('pause')
         elif opcion == 6:
             print("SALIR")
