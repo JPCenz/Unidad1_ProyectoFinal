@@ -73,7 +73,6 @@ class Libro:
 def abrir_archivo(file ="libros.csv" )-> list[Libro]:
     lista_libros=[]
     try:
-        file = "libros.csv"
         with open(file) as f:
             reader = csv.reader(f)
             line_count=0
@@ -97,6 +96,23 @@ def abrir_archivo(file ="libros.csv" )-> list[Libro]:
     except Exception as ex:
         print(ex)
 
+def escribir_archivo(Libros: list[Libro],file='libros_guardados.csv')-> None :
+    try:
+        with open(file, 'w',newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(["Id","Titulo","Genero","ISBN","Editorial","Autor"])
+            for l in Libros:
+                if type(l.autor) == type([]):
+                    autores = ','.join(l.autor)
+                    writer.writerow([l.id,l.titulo,l.genero,l.isbn,l.editorial,autores])
+                else:
+                    writer.writerow([l.id,l.titulo,l.genero,l.isbn,l.editorial,l.autor])
+        print("Libros Guardados Exitosamente en el archivo libros_guardados.csv ")
+
+    except Exception as ex:
+        print(ex)
+    
+#Reciba una lista de objetos Libros imprime en pantalla sus atributpos
 def listar_libros(list_libros : list[Libro] ) ->list:
     print("==============================  Libros  ===============================================")
     print("     Titulo         |   Genero  |        ISBN    |   Editorial   |   Autor (es)")
@@ -123,11 +139,12 @@ def buscar_por_titulo(titulo: str, list_libros: list[Libro]) -> Libro:
 
 def opcion1() -> list[Libro]:
     print("Leyendo archivo libros.csv...")
-    lista_libros = abrir_archivo()
+    lista_libros = abrir_archivo(file='libros.csv')
     return lista_libros
 
+#solicita una opcion 1 o 2  y retorna un libro resultado de la busqueda
 def opcion5(lista_libros) -> Libro:
-    libro1 :Libro
+    libro1 : Libro
     opcion = 0
     while opcion not in (1,2):
         print("1.  Buscar por titulo")
@@ -173,6 +190,7 @@ def opcion5(lista_libros) -> Libro:
 
 
 
+#pide un numero entero al usuario y valida si es entero
 def pedirNumeroEntero():
     correcto=False
     num=0
@@ -233,7 +251,7 @@ def main():
             if libro == None:
                 print("No se encontraron coincidencias")
             else:
-                "Resultados :"
+                print("Resultados :")
                 print(f'{libro.titulo}    |    {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
             os.system('pause')
         elif opcion == 6:
@@ -258,6 +276,14 @@ def main():
         elif opcion == 10:
             os.system('cls')
             print("Opcion 10")
+            try:
+                if len(lista_libros) == 0:
+                    print("No hay datos para guardar, aniada libros ")
+                else:
+                    escribir_archivo(lista_libros)
+                    
+            except Exception as ex:
+                print(ex)
             os.system('pause') 
         elif opcion == 11:
             print("SALIR")
