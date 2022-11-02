@@ -1,5 +1,4 @@
-import os, pandas as pd
-from numpy import append
+import os,csv
 
 
 class Libro:
@@ -35,7 +34,7 @@ class Libro:
     def genero(self):
         return self.__genero
     @genero.setter
-    def titulo(self, genero: str):
+    def genero(self, genero: str):
         self.__genero = genero
 
     @property
@@ -63,31 +62,92 @@ class Libro:
         pass
 
 
-for i in range(3):
-    a = Libro("001","ABCtitulo","comedia","00123","santillana")
-    listalibros =[]
-listalibros.append(a)
 
 
 
 
-def ord_por_titulo(list_libros : list):
-    list_ordenada = []
-    for i in list_libros:
-        list_ordenada.append(i)
+
+
+
+#lee un archivo csv y retorna una lista de objetos Libros
+def abrir_archivo(file ="libros.csv" )-> list[Libro]:
+    lista_libros=[]
+    try:
+        file = "libros.csv"
+        with open(file) as f:
+            reader = csv.reader(f)
+            line_count=0
+            for row in reader:
+                if line_count == 0:                   
+                    line_count += 1
+                else:
+                    i = Libro(row[0],row[1],row[2],row[3],row[4])
+                    lista=[]
+                    autor = row[5]              #en caso de que tenga varios autores convertir a lista
+                    autor = autor.strip()
+                    for a in autor.split(sep=","):
+                        lista.append(a.strip())
+                    if len(lista) >1:
+                        i.autor=lista
+                    else:
+                        i.autor = autor
+                    lista_libros.append(i)                   
+                    line_count += 1
+        return lista_libros
+    except Exception as ex:
+        print(ex)
+
+def listar_libros(list_libros : list[Libro] ) ->list:
+    print("==============================  Libros  ===============================================")
+    print("     Titulo         |   Genero  |        ISBN    |   Editorial   |   Autor (es)")
+    for i,libro in enumerate(list_libros,start=1):
+        print(f'{i}-> {libro.titulo}    |       {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
+        print("---------------------------------------------------------------------------------------")
+    print("=======================================================================================")
+
+def buscar_por_isbn(isbn: str, list_libros: list[Libro]) -> Libro:
+    for l in list_libros:
+        if isbn.strip()== l.isbn:
+            return l
+    return None
+
+def ord_por_titulo(list_libros : list[Libro]) -> list:
+    ordenado = sorted(list_libros,key=lambda a : a.titulo)
+    return ordenado
+
+def buscar_por_titulo(titulo: str, list_libros: list[Libro]) -> Libro:
+    for l in list_libros:
+        if titulo.strip()== l.titulo:
+            return l
+    return None
+
+def opcion1() -> list[Libro]:
+    print("Leyendo archivo libros.csv...")
+    lista_libros = abrir_archivo()
+    return lista_libros
+
+def opcion5(lista_libros) -> Libro:
+    libro1 :Libro
+    opcion = 0
+    while opcion not in (1,2):
+        print("1.  Buscar por titulo")
+        print("2.  Buscar por ISBN")
+        print("Ingrese 1 o 2 ")
+        opcion = pedirNumeroEntero()
     
-    return list_ordenada
-listafinal = ord_por_titulo(listalibros)
+    if opcion == 1:
+        titulo = input("Ingrese el titulo a buscar :")
+        libro1 = buscar_por_titulo(titulo,lista_libros)
+        return libro1
 
-for i in listafinal:
-    print(i)
-
-
-
-
-
-
-
+    elif opcion == 2:
+        isbn = input("Ingrese el ISBN a buscar:")
+        libro1 = buscar_por_isbn(isbn,lista_libros)
+        return libro1
+    else: 
+        return None
+    
+    
 
 
 
@@ -132,7 +192,7 @@ def menu_principal():
         print("2.  Listar libros")
         print("3.  Agregar ibro")
         print("4.  Eliminar libro")
-        print("5.  Buscar libro por ISBN") 
+        print("5.  Buscar libro por ISBN o titulo") 
         print("6.  Ordenar libro por Titulo")  
         print("7.  Buscar libro por autor,editorial o genero")
         print("8.  Buscar libro por numero de autores")
@@ -144,15 +204,19 @@ def menu_principal():
         opcion = pedirNumeroEntero()
         return opcion
 def main():
+    lista_libros=[]
     while True:
         opcion = menu_principal()
         if opcion == 1:
             os.system('cls')
-            print ("Opcion 1")   
+            print ("Opcion 1")
+            lista_libros = opcion1() 
+            print(f"cantidad de libros cargados: {len(lista_libros)}")
             os.system('pause')
         elif opcion == 2:
             os.system('cls')
             print ("Opcion 2")
+            listar_libros(lista_libros)
             os.system('pause')
         elif opcion == 3:
             os.system('cls')
@@ -165,10 +229,19 @@ def main():
         elif opcion == 5:
             os.system('cls')
             print("Opcion 5")
+            libro = opcion5(lista_libros)
+            if libro == None:
+                print("No se encontraron coincidencias")
+            else:
+                "Resultados :"
+                print(f'{libro.titulo}    |    {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
             os.system('pause')
         elif opcion == 6:
             os.system('cls')
             print("Opcion 6")
+            lista_libros = ord_por_titulo(lista_libros)
+            print("Lista ordenada")
+            listar_libros(lista_libros)
             os.system('pause')
         elif opcion == 7:
             os.system('cls')
@@ -192,6 +265,7 @@ def main():
         else:
             os.system('cls')
             print("Ingresa un nuevo numero :")
+        
     
 if __name__ == '__main__':
     main()
