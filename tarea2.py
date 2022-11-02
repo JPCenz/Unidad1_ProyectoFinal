@@ -65,6 +65,126 @@ def opcion1():
         else:
             print('Ingrese una generacion aceptable [1-8]: ')
 
+def opcion3():
+    try:
+        url = 'https://pokeapi.co/api/v2/ability/'
+        response = requests.get(url)
+        data0 = response.json()
+        habilidades = []
+        url_habilidades = []
+        for i in data0['results']:
+            habilidades.append(i['name'])
+            url_habilidades.append(i['url'])
+        k = 1
+        for i in habilidades:
+            print(f'Habilidad {k}: {i}')
+            k +=1
+        while True:
+            valor = input("\nINGRESE UN NUMERO DE HABILIDAD\nValor: ")
+            if valor.isnumeric():
+                valor = int(valor)
+                if valor in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]:
+                    for i in range(1,21):
+                        if valor == i:
+                            url1 = f'https://pokeapi.co/api/v2/ability/{valor}'
+                            lista_pokemon = []
+                            habilidades_pokemon = []
+                            url_imagenpokemon = []
+                            
+                            response1 = requests.get(url1)
+                            data1 = response1.json()['pokemon']
+                            lista = []
+                            url_pokemon = []
+                            for j in data1:
+                                lista.append(j)
+                            
+                            for k in range (len(data1)):
+                                lista_pokemon.append(lista[k]['pokemon']['name'])
+                                url_pokemon.append(lista[k]['pokemon']['url'])
+                            
+                            for l in url_pokemon:
+                                lista_habilidades = []
+                                respons = requests.get(l)
+                                data2 = respons.json()['abilities']
+                                data3 = respons.json()['sprites']['front_default']
+                                url_imagenpokemon.append(data3)
+                                for m in data2:
+                                    lista_habilidades.append(m['ability']['name'])
+                                habilidades_pokemon.append(lista_habilidades)
+                            
+                            print(f"\nLista de pokemones con la habilidad {valor} son:\n")
+                            for count, (i,j,k) in enumerate(zip(lista_pokemon,habilidades_pokemon,url_imagenpokemon), start=1):
+                                print(f'{count}> Pokemon: {i} >Habilidades: {j} >Url_img: {k}')
+                    break
+                else:
+                    print('Ingrese una habilidad aceptable [1-20]: ')
+            else:
+                print('Ingrese una habilidad aceptable [1-20]: ')
+    except Exception as ex:
+        print(ex)
+
+
+def opcion4():
+    try:
+        url = 'https://pokeapi.co/api/v2/pokemon-habitat/'
+        response = requests.get(url)
+        data0 = response.json()
+        habitad = []
+        url_habitad = []
+        for i in data0['results']:
+            habitad.append(i['name'])
+            url_habitad.append(i['url'])
+        k = 1
+        for i in habitad:
+            print(f'Habitad {k}: {i}')
+            k +=1
+        while True:
+            valor = input("\nINGRESE UN NUMERO DE HABITAD\nValor: ")
+            if valor.isnumeric():
+                valor = int(valor)
+                if valor in [1,2,3,4,5,6,7,8,9]:
+                    for i in range(1,10):
+                        if valor == i:
+                            url1 = f'https://pokeapi.co/api/v2/pokemon-habitat/{valor}/'
+                            lista_pokemon = []
+                            habilidades_pokemon = []
+                            url_imagenpokemon = []
+                            
+                            response1 = requests.get(url1)
+                            data1 = response1.json()['pokemon_species']
+                            url_pokemon = []
+                            for j in data1:
+                                lista_pokemon.append(j['name'])
+                                url_pokemon.append(j['url'])
+
+                            url_data_pokemons = []
+                            for k in url_pokemon:
+                                response2 = requests.get(k)
+                                data2 = response2.json()['varieties'][0]['pokemon']
+                                url_data_pokemons.append(data2['url'])
+                            
+                            for l in url_data_pokemons:
+                                habilidades_temporal = []
+                                response3 = requests.get(l)
+                                data3 = response3.json()['abilities']
+                                data4 = response3.json()['sprites']['front_default']
+                                url_imagenpokemon.append(data4)
+                                for m in data3:
+                                    habilidades_temporal.append(m['ability']['name'])
+                                habilidades_pokemon.append(habilidades_temporal)
+                          
+                            print(f"\nLa lista de pokemones con la Habitad {valor} son:\n")
+                            for count, (i,j,k) in enumerate(zip(lista_pokemon,habilidades_pokemon,url_imagenpokemon), start=1):
+                                print(f'{count}> Pokemon: {i} >Habilidades: {j} >Url_img: {k}')
+                    break
+                else:
+                    print('Ingrese una habilidad aceptable [1-9]: ')
+            else:
+                print('Ingrese una habilidad aceptable [1-9]: ')
+    except Exception as ex:
+        print(ex)
+
+
 def pedirNumeroEntero():
     correcto=False
     num=0
@@ -106,10 +226,12 @@ def main():
         elif opcion == 3:
             os.system('cls')
             print("Opcion 3")
+            opcion3()
             os.system('pause')
         elif opcion == 4:
             os.system('cls')
             print("Opcion 4")
+            opcion4()
             os.system('pause')
         elif opcion == 5:
             os.system('cls')
