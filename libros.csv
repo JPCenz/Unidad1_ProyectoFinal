@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 Libro,Id,Titulo,Genero,ISBN,Editorial,Autor
 "libro1",111,"titulo1","genero1",111-11-11111-11-1,"editorial1","autor1"
 "libro2",222,"titulo2","genero2",222-22-22222-22-2,"editorial2","autor2"
 "libro3",333,"titulo3","genero3",333-33-33333-33-3,"editorial3","autor3"
+=======
+Id,Titulo,Genero,ISBN,Editorial,Autor
+111,"titulo9","genero1","111-11-11111-11-1","editorial1","autor1 , autor1.2 , autor1.3"
+222,"titulo8","genero2","222-22-22222-22-2","editorial2","Autor"
+333,"titulo7","genero3","333-33-33333-33-3","editorial3","autor3"
+>>>>>>> main
