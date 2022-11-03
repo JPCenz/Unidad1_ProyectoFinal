@@ -74,6 +74,43 @@ def opcion1():
         else:
             print('Ingrese una generacion aceptable [1-8]: ')
 
+def buscar_por_forma(forma):
+    try:
+        mostrar_mensaje_espera(3)
+        res = requests.get(f'https://pokeapi.co/api/v2/pokemon-form/{forma}')
+        res.raise_for_status()
+        data = res.json()
+        imagen = data['sprites']["front_default"]
+        url_pokemon = data['pokemon']['url']
+        contador = 0
+        res1 = requests.get(url_pokemon)
+        res1.raise_for_status()
+        data1= res1.json()
+        nombre : str = data1['name']
+        habilidades= []
+        imagen : str 
+        for i in data1['abilities']:
+            habilidades.append(i['ability']['name'])
+        contador = contador + 1       
+        # print("----------------------------------------------------------------------------------")
+        print(f"{contador}.  POKE: {nombre.capitalize()}, Habilidades: {','.join(habilidades)}, Imagen: {imagen}")
+        print("-------------------------------------------------------------------------------------")        
+    except requests.HTTPError as ex:
+        print("Forma no encontrada")
+        
+
+def opcion2():
+    print("Ejemplos de formas: luxio, luxray, metang, electrike, volbeat, carvanha,voltorb")
+    a = input("Ingrese una forma de pokemon a buscar:").lower()
+    try:
+        buscar_por_forma(a)
+    except Exception as ex:
+        print(ex)
+    input("Presione enter para continuar")
+
+
+
+
 def opcion3():
     try:
         url = 'https://pokeapi.co/api/v2/ability/'
@@ -282,6 +319,7 @@ def main():
         elif opcion == 2:
             os.system('cls')
             print ("Opcion 2")
+            opcion2()
             os.system('pause')
         elif opcion == 3:
             os.system('cls')
