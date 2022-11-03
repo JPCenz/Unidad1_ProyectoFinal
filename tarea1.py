@@ -8,20 +8,25 @@ class Libro:
     __isbn : str
     __editorial : str
     __autor : list = []
+    count = 1
 
-    def __init__(self,id,titulo,genero,isbn,editorial) -> None:
-        self.__id = id
+
+    def __init__(self,titulo,genero,isbn,editorial) -> None:
         self.__titulo = titulo
         self.__genero = genero
         self.__isbn = isbn
         self.__editorial = editorial
+        self.__id = self.count
+        Libro.count += 1
 
     @property
     def id(self):
         return self.__id
-    @id.setter
-    def id(self, id: str):
-        self.__id = id
+    # @id.setter
+    # def id(self):
+    #     self.count += 1 
+    #     self.__id = self.count
+
 
     @property
     def titulo(self):
@@ -90,8 +95,8 @@ def abrir_archivo(file ="libros.csv" )-> list[Libro]:
                 if line_count == 0:                   
                     line_count += 1
                 else:
-                    i = Libro(row[0],row[1],row[2],row[3],row[4])
-                    autor = row[5]             
+                    i = Libro(row[0],row[1],row[2],row[3])
+                    autor = row[4]             
                     i.autor = autor
                     lista_libros.append(i)                   
                     line_count += 1
@@ -104,10 +109,10 @@ def escribir_archivo(Libros: list[Libro],file='libros_guardados.csv')-> None :
     try:
         with open(file, 'w',newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(["Id","Titulo","Genero","ISBN","Editorial","Autor"])
+            writer.writerow(["Titulo","Genero","ISBN","Editorial","Autor"])
             for l in Libros:
                 autores = ','.join(l.autor)
-                writer.writerow([l.id,l.titulo,l.genero,l.isbn,l.editorial,autores])
+                writer.writerow([l.titulo,l.genero,l.isbn,l.editorial,autores])
         print("Libros Guardados Exitosamente en el archivo libros_guardados.csv ")
 
     except Exception as ex:
@@ -116,9 +121,9 @@ def escribir_archivo(Libros: list[Libro],file='libros_guardados.csv')-> None :
 #Reciba una lista de objetos Libros imprime en pantalla sus atributpos
 def listar_libros(list_libros : list[Libro] ) ->list[Libro]:
     print("==============================  Libros  ===============================================")
-    print("Pos|     Titulo         |   Genero  |        ISBN    |   Editorial   |   Autor (es)")
-    for i,libro in enumerate(list_libros,start=1):
-        print(f'{i}-> {libro.titulo}    |       {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
+    print("ID|     Titulo         |   Genero  |        ISBN    |   Editorial   |   Autor (es)")
+    for libro in list_libros:
+        print(f'{libro.id}-> {libro.titulo}    |       {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
         print("---------------------------------------------------------------------------------------")
     print("=======================================================================================")
     return list_libros
@@ -149,6 +154,11 @@ def ord_por_titulo(list_libros : list[Libro]) -> list:
 def buscar_por_titulo(titulo: str, list_libros: list[Libro]) -> Libro:
     for l in list_libros:
         if titulo.strip()== l.titulo:
+            return l
+    return None
+def buscar_por_id(id: int, list_libros: list[Libro]) -> Libro:
+    for l in list_libros:
+        if id == l.id:
             return l
     return None
 
@@ -188,38 +198,34 @@ def opcion8(lista_libros: list[Libro])-> list[Libro]:
         return libros_encontrados
 
     
-def actualizar_libro(lista_libro: list[Libro], posicion: int,id,titulo,genero,isbn,editorial,autor) -> list[Libro]:
-    lista_libro[posicion-1].id =id 
-    lista_libro[posicion-1].titulo =titulo
-    lista_libro[posicion-1].genero= genero
-    lista_libro[posicion-1].isbn = isbn
-    lista_libro[posicion-1].editorial = editorial
-    lista_libro[posicion-1].autor = autor
-    return lista_libro
+def actualizar_libro(libro, id: int,titulo,genero,isbn,editorial,autor) -> Libro:
+    libro.titulo =titulo
+    libro.genero= genero
+    libro.isbn = isbn
+    libro.editorial = editorial
+    libro.autor = autor
+    return libro
 
-def opcion9(lista_libros : list[Libro]) -> list[Libro]:
-    print("Por favor ingrese una posicion valida (numero) del libro a editar o 0 para salir:")
+def opcion9(lista_libros : list[Libro]) -> bool:
+    print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
     opcion = 0
-    while opcion not in range(1,len(lista_libros)+1):
+    libro = None
+    while libro == None:
         opcion = pedirNumeroEntero() 
-        if opcion in range(1,len(lista_libros)+1):
-            id = input("Ingrese nuevo id: ")
+        libro = buscar_por_id(opcion,lista_libros)
+        if libro:
             titulo=input("Ingrese nuevo titulo: ")
             genero=input("Ingrese nuevo genero: ")
             isbn=input("Ingrese nuevo isbn: ")
             editorial=input("Ingrese nuevo editorial: ")
             autor=input("Ingrese nuevo autor (si son mas de uno separalo con comas): ")
-            lista = []
-            autor = autor.strip()
-            for a in autor.split(sep=","):
-                lista.append(a.strip())
-            if len(lista) >1:
-                autor=lista  
-            return actualizar_libro(lista_libros,opcion,id,titulo,genero,isbn,editorial,autor)
+            actualizar_libro(libro,opcion,titulo,genero,isbn,editorial,autor)
+            return True
         elif opcion == 0:
-            break
+            return False
         else:
-            print("Ingrese un numero valido o 0 para salir")
+            print("ID no valido")
+            print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
 
 
 
@@ -341,9 +347,10 @@ def main():
             else:
                 print("Actualizar libro")
                 listar_libros(lista_libros)
-                lista_libros = opcion9(lista_libros)
-                print("Lista Actualizada")
-                listar_libros(lista_libros)
+                l =opcion9(lista_libros)
+                if l != None:
+                    print("Lista Actualizada")
+                    listar_libros(lista_libros)
             os.system('pause')
         elif opcion == 10:
             os.system('cls')
@@ -367,6 +374,3 @@ def main():
     
 if __name__ == '__main__':
     main()
-    # a1 = Libro("001","ABCtitulo","comedia","00123","santillana")
-    # a1.autor = 'autor,autor2,auto3'
-    # print(a1.autor)
