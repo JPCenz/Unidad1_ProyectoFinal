@@ -191,19 +191,13 @@ def opcion3(lista_libros: list[Libro]) -> list:
     return lista_libros
 
 
-def opcion4():
-
-    print("Lista de libros actuales: ")
-    with open('libros.csv', newline='') as file:
-        next(file, None)
-        k=1
-        for linea in file:
-            linea = linea.rstrip()
-            lista = linea.split(',')
-            titulo4 = lista[1]
-            autor4 = lista[5]
-            print(f'Libro {k}> Titulo: {titulo4} Autor: {autor4}')
-            k+=1
+# Se elimina libro de la lista libros.
+def opcion4(lista_libros: list[Libro]) -> list:
+    k = 1
+    print("De acuerdo a la siguiente lista, seleccione el libro a eliminar: ")
+    for count, i in enumerate(lista_libros, start=1):
+        print(f'Libro {count}> (Titulo: {i.titulo} / Autor: {i.autor})  ')
+        k += 1
 
     while True:
         valor = input('\nIngrese el numero de libro a eliminar: ')
@@ -211,21 +205,15 @@ def opcion4():
             if int(valor) in range(1,k):
                 for i in range (1,k):
                     if i == int(valor):
-                        valor = int(valor)
+                        valor = int(valor)-1
                 break
             else:
                 print("El valor ingresado no es correcto.")
         else:
             print("El valor ingresado no es correcto.")
-
-    with open(r'libros.csv','r+') as fread:
-        lines = fread.readlines()
-        fread.seek(0)
-        fread.truncate()
-        for number, line in enumerate(lines):
-            if number not in [valor]:
-                fread.write(line)
-    print(f'\nSe elimino el libro {valor}')
+    
+    lista_libros.pop(valor)
+    return lista_libros
 
 #solicita una opcion 1 o 2  y retorna un libro resultado de la busqueda
 def opcion5(lista_libros) -> Libro:
@@ -360,7 +348,7 @@ def main():
         elif opcion == 4:
             os.system('cls')
             print("Opcion 4")
-            opcion4()
+            opcion4(lista_libros)
             os.system('pause')
         elif opcion == 5:
             os.system('cls')
