@@ -144,7 +144,13 @@ def opcion1() -> list[Libro]:
     return lista_libros
 
 
-def opcion3():
+def opcion3(lista_libx):
+
+    aasdaxxxs = sjjasjasa
+    librox = Libro(id='a',titulo='b',genero='c',editorial='g',isbn='hh')
+    librox.autor = 'autorx'
+    print(librox.id,librox.autor,librox.editorial)
+
     print("\nIngrese los datos del libro para su agregacion.\n")
     fieldnames = ['Id','Titulo','Genero','ISBN','Editorial','Autor']
     id3 = input('Ingrese Id: ')
@@ -302,6 +308,7 @@ def main():
         elif opcion == 3:
             os.system('cls')
             print("Opcion 3")
+            opcion3(lista_libros)
             opcion3()
             os.system('pause')
         elif opcion == 4:
