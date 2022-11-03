@@ -95,7 +95,8 @@ def abrir_archivo(file ="libros.csv" )-> list[Libro]:
         return lista_libros
     except Exception as ex:
         print(ex)
-
+        
+#Recibe una lista de Libros y escribe los datos en un archivo .csv
 def escribir_archivo(Libros: list[Libro],file='libros_guardados.csv')-> None :
     try:
         with open(file, 'w',newline='') as f:
@@ -141,6 +142,32 @@ def opcion1() -> list[Libro]:
     print("Leyendo archivo libros.csv...")
     lista_libros = abrir_archivo(file='libros.csv')
     return lista_libros
+
+
+def opcion3():
+    print("\nIngrese los datos del libro para su agregacion.\n")
+    fieldnames = ['Id','Titulo','Genero','ISBN','Editorial','Autor']
+    id3 = input('Ingrese Id: ')
+    titulo3 = input('Ingrese titulo: ')
+    genero3 = input('Ingrese genero: ')
+    isbn3 = input('Ingrese codigo isbn: ')
+    editorial3 = input('Ingrese editorial: ')
+    autor_list = []
+
+    while True:
+        autor = input('Ingrese autor: ')
+        autor_list.append(autor)
+        valor=input('Desea agregar otro autor? (S/N): ')
+        if valor.lower() == 's':
+            True
+        else:
+            break
+    autor3 = " , ".join(autor_list)
+    
+    newrow = [id3,titulo3,genero3,isbn3,editorial3,autor3]
+    with open('libros.csv', 'a' , newline='') as f:
+        app_writer = csv.writer(f, fieldnames)
+        app_writer.writerow(newrow)
 
 #solicita una opcion 1 o 2  y retorna un libro resultado de la busqueda
 def opcion5(lista_libros) -> Libro:
@@ -239,6 +266,7 @@ def main():
         elif opcion == 3:
             os.system('cls')
             print("Opcion 3")
+            opcion3()
             os.system('pause')
         elif opcion == 4:
             os.system('cls')
