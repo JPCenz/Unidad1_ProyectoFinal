@@ -7,7 +7,7 @@ class Libro:
     __genero : str
     __isbn : str
     __editorial : str
-    __autor : list
+    __autor : list = []
 
     def __init__(self,id,titulo,genero,isbn,editorial) -> None:
         self.__id = id
@@ -55,19 +55,21 @@ class Libro:
     def autor(self):
         return self.__autor  
     @autor.setter
-    def autor(self, autor):
-        self.__autor=autor
-        # lista = []
-        # autor = autor.strip()
-        # for a in autor.split(sep=","):
-        #     lista.append(a.strip())
-        # if len(lista) >1:
-        #     self.__autor=lista
-        # else:
-        #     self.__autor= autor   
+    def autor(self, autor :str):
+        self.__autor=self.__autor.append(autor)
+        autor = autor.strip()
+        lista_temp =[]
+        for a in autor.split(sep=","):
+            lista_temp.append(a.strip())
+        if len(lista_temp) >1:
+            self.__autor = lista_temp
+        else:
+            self.__autor= [autor] 
 
     def __del__(self):
         pass
+
+
 
 
 
@@ -89,15 +91,8 @@ def abrir_archivo(file ="libros.csv" )-> list[Libro]:
                     line_count += 1
                 else:
                     i = Libro(row[0],row[1],row[2],row[3],row[4])
-                    lista=[]
-                    autor = row[5]              #en caso de que tenga varios autores convertir a lista
-                    autor = autor.strip()
-                    for a in autor.split(sep=","):
-                        lista.append(a.strip())
-                    if len(lista) >1:
-                        i.autor=lista
-                    else:
-                        i.autor = autor
+                    autor = row[5]             
+                    i.autor = autor
                     lista_libros.append(i)                   
                     line_count += 1
         return lista_libros
@@ -111,11 +106,8 @@ def escribir_archivo(Libros: list[Libro],file='libros_guardados.csv')-> None :
             writer = csv.writer(f)
             writer.writerow(["Id","Titulo","Genero","ISBN","Editorial","Autor"])
             for l in Libros:
-                if type(l.autor) == type([]):
-                    autores = ','.join(l.autor)
-                    writer.writerow([l.id,l.titulo,l.genero,l.isbn,l.editorial,autores])
-                else:
-                    writer.writerow([l.id,l.titulo,l.genero,l.isbn,l.editorial,l.autor])
+                autores = ','.join(l.autor)
+                writer.writerow([l.id,l.titulo,l.genero,l.isbn,l.editorial,autores])
         print("Libros Guardados Exitosamente en el archivo libros_guardados.csv ")
 
     except Exception as ex:
@@ -375,3 +367,6 @@ def main():
     
 if __name__ == '__main__':
     main()
+    # a1 = Libro("001","ABCtitulo","comedia","00123","santillana")
+    # a1.autor = 'autor,autor2,auto3'
+    # print(a1.autor)
