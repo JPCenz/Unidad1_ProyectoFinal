@@ -138,28 +138,42 @@ def buscar_por_titulo(titulo: str, list_libros: list[Libro]) -> Libro:
             return l
     return None
 
+def buscar_por_autor(autor7: str, lista_libros7: list[Libro]):
+    for l7 in lista_libros7:
+        if autor7.strip() == l7.autor:
+            return l7
+    return None
+
+def buscar_por_editorial(editorial7: str, lista_libros7: list[Libro]) -> Libro:
+    for l7 in lista_libros7:
+        if editorial7.strip() == l7.editorial:
+            return l7
+    return None
+
+def buscar_por_genero(genero7: str, lista_libros7: list[Libro]) -> Libro:
+    for l7 in lista_libros7:
+        if genero7.strip() == l7.genero:
+            return l7
+    return None
+
+
+
 def opcion1() -> list[Libro]:
     print("Leyendo archivo libros.csv...")
     lista_libros = abrir_archivo(file='libros.csv')
     return lista_libros
 
-
-def opcion3(lista_libx):
-
-    aasdaxxxs = sjjasjasa
-    librox = Libro(id='a',titulo='b',genero='c',editorial='g',isbn='hh')
-    librox.autor = 'autorx'
-    print(librox.id,librox.autor,librox.editorial)
+# Se agrega libro con datos ingresados por consola
+def opcion3(lista_libros: list[Libro]) -> list:
 
     print("\nIngrese los datos del libro para su agregacion.\n")
-    fieldnames = ['Id','Titulo','Genero','ISBN','Editorial','Autor']
     id3 = input('Ingrese Id: ')
     titulo3 = input('Ingrese titulo: ')
     genero3 = input('Ingrese genero: ')
     isbn3 = input('Ingrese codigo isbn: ')
     editorial3 = input('Ingrese editorial: ')
     autor_list = []
-
+    
     while True:
         autor = input('Ingrese autor: ')
         autor_list.append(autor)
@@ -169,11 +183,13 @@ def opcion3(lista_libx):
         else:
             break
     autor3 = " , ".join(autor_list)
+
+    libro3 = Libro(id3,titulo3,genero3,isbn3,editorial3)
+    libro3.autor = autor3
+    lista_libros.append(libro3)
     
-    newrow = [id3,titulo3,genero3,isbn3,editorial3,autor3]
-    with open('libros.csv', 'a' , newline='') as f:
-        app_writer = csv.writer(f, fieldnames)
-        app_writer.writerow(newrow)
+    return lista_libros
+
 
 def opcion4():
 
@@ -234,7 +250,38 @@ def opcion5(lista_libros) -> Libro:
         return None
     
     
-
+def opcion7(lista_libros):
+    libro7 : Libro
+    opcion7=0
+    while opcion7 not in [1,2,3]:
+        print('\nIngrese una opcion para su busqueda: ')
+        print('1. Buscar por autor: ')
+        print('2. Buscar por editorial: ')
+        print('3. Buscar por genero: ')
+        valor = input('Ingrese numero de opcion: ')
+        if valor.isnumeric():
+            if int(valor) in range (1,4):
+                for i in range(1,4):
+                    if i == int(valor):
+                        valor = int(valor)
+                break
+            else:
+                print('\nEl valor ingresado no es correcto.')
+        else:
+            print('\nEl valor ingresado no es correcto.')
+    
+    if valor == 1:
+        autor7 = input('Ingrese el autor a buscar: ')
+        libro7 = buscar_por_autor(autor7, lista_libros)
+        return libro7
+    elif valor == 2:
+        editorial7 = input('Ingrese una editorial a buscar: ')
+        libro7 = buscar_por_editorial(editorial7, lista_libros)
+        return libro7
+    else:
+        genero7 = input('Ingrese genero a buscar: ')
+        libro7 = buscar_por_genero(genero7, lista_libros)
+        return libro7
 
 
 
@@ -309,7 +356,6 @@ def main():
             os.system('cls')
             print("Opcion 3")
             opcion3(lista_libros)
-            opcion3()
             os.system('pause')
         elif opcion == 4:
             os.system('cls')
@@ -336,6 +382,11 @@ def main():
         elif opcion == 7:
             os.system('cls')
             print("Opcion 7")
+            libro7 = opcion7(lista_libros)
+            if libro7 == None:
+                print('No se encontró libro con el valor ingresado')
+            else:
+                print(f'{libro7.titulo}    |    {libro7.genero} | {libro7.isbn}  |  {libro7.editorial}  | {libro7.autor}')
             os.system('pause')
         elif opcion == 8:
             os.system('cls')
