@@ -164,7 +164,8 @@ def opcion1() -> list[Libro]:
     return lista_libros
 
 # Se agrega libro con datos ingresados por consola
-def opcion3():
+def opcion3(lista_libros: list[Libro]):
+
     print("\nIngrese los datos del libro para su agregacion.\n")
     fieldnames = ['Id','Titulo','Genero','ISBN','Editorial','Autor']
     id3 = input('Ingrese Id: ')
@@ -173,7 +174,7 @@ def opcion3():
     isbn3 = input('Ingrese codigo isbn: ')
     editorial3 = input('Ingrese editorial: ')
     autor_list = []
-
+    
     while True:
         autor = input('Ingrese autor: ')
         autor_list.append(autor)
@@ -183,11 +184,12 @@ def opcion3():
         else:
             break
     autor3 = " , ".join(autor_list)
+
+    libro3 = Libro(id3,titulo3,genero3,isbn3,editorial3)
+    libro3.autor = autor3
+    lista_libros.append(libro3)
     
-    newrow = [id3,titulo3,genero3,isbn3,editorial3,autor3]
-    with open('libros.csv', 'a' , newline='') as f:
-        app_writer = csv.writer(f, fieldnames)
-        app_writer.writerow(newrow)
+    return lista_libros
 
 
 def opcion4():
@@ -354,7 +356,7 @@ def main():
         elif opcion == 3:
             os.system('cls')
             print("Opcion 3")
-            opcion3()
+            opcion3(lista_libros)
             os.system('pause')
         elif opcion == 4:
             os.system('cls')
