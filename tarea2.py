@@ -65,6 +65,76 @@ def opcion1():
         else:
             print('Ingrese una generacion aceptable [1-8]: ')
 
+
+def opcion2():
+    try:
+        url = 'https://pokeapi.co/api/v2/pokemon-shape/'
+        response = requests.get(url)
+        data_formas = response.json()
+        formas = []
+        url_formas = []
+        for i in data_formas['results']:
+            formas.append(i['name'])
+            url_formas.append(i['url'])
+        k = 1
+        for i in formas:
+            print(f'Forma {k}: {i}')
+            k +=1
+        while True:
+            valor = input("\nINGRESE EL NUMERO DE LA FORMA\nValor: ")
+            if valor.isnumeric():
+                valor = int(valor)
+                if valor in [1,2,3,4,5,6,7,8,9,10,11,12,13,14]:
+                    for i in range(1,15):
+                        if valor == i:
+                            url1 = f'https://pokeapi.co/api/v2/pokemon-shape/{valor}'
+                            lista_pokemon = []
+                            habilidades_pokemon = []
+                            url_imagenpokemon = []
+                            
+                            
+                            response1 = requests.get(url1)
+                            data1 = response1.json()['pokemon_species']
+                            lista = []
+                            url_pokemon = []
+                            for j in data1:
+                                lista.append(j)
+
+                            for k in range (len(data1)):
+                                lista_pokemon.append(lista[k]['name'])
+                                url_pokemon.append(lista[k]['url'])
+                            
+                            urlpokemon_data =[]
+                            for l in url_pokemon:
+                                url_data_poke = []
+                                res = requests.get(l)
+                                data2 = res.json()['varieties']
+                                for m in data2:
+                                    if m['is_default'] == True:
+                                        url_data_poke.append(m['pokemon']['url'])
+                                urlpokemon_data.append(*url_data_poke)
+            
+                            for n in urlpokemon_data:
+                                lista_habilidades = []
+                                respons = requests.get(n)
+                                data3 = respons.json()['abilities']
+                                data4 = respons.json()['sprites']['front_default']
+                                url_imagenpokemon.append(data4)
+                                for o in data3:
+                                    lista_habilidades.append(o['ability']['name'])
+                                habilidades_pokemon.append(lista_habilidades)
+                            
+                            print(f"\nLista de pokemones con la forma {valor} son:\n")
+                            for count, (i,j,k) in enumerate(zip(lista_pokemon,habilidades_pokemon,url_imagenpokemon), start=1):
+                                print(f'{count}> Pokemon: {i} >Habilidades: {j} >Url_img: {k}')
+                    break
+                else:
+                    print('Ingrese una habilidad aceptable [1-14]: ')
+            else:
+                print('Ingrese una habilidad aceptable [1-14]: ')
+    except Exception as ex:
+        print(ex)
+
 def opcion3():
     try:
         url = 'https://pokeapi.co/api/v2/ability/'
@@ -221,6 +291,7 @@ def main():
         elif opcion == 2:
             os.system('cls')
             print ("Opcion 2")
+            opcion2()
             os.system('pause')
         elif opcion == 3:
             os.system('cls')
