@@ -72,6 +72,7 @@ class Libro:
             self.__autor= [autor] 
 
     def __del__(self):
+        print("objeto eliminado")
         pass
 
 
@@ -227,6 +228,26 @@ def opcion9(lista_libros : list[Libro]) -> bool:
             print("ID no valido")
             print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
 
+def opcion4(list_libros :list[Libro]):
+    listar_libros(list_libros)
+    print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
+    opcion = 0
+    libro = None
+    while libro == None:
+        opcion = pedirNumeroEntero() 
+        libro = buscar_por_id(opcion,list_libros)
+        if libro:
+            for i,l in enumerate(list_libros):
+                if l.id == opcion:
+                    list_libros.pop(i)
+        elif opcion == 0:
+            return False
+        else:
+            print("ID no valido")
+            print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
+
+
+
 
 
 
@@ -307,6 +328,7 @@ def main():
         elif opcion == 4:
             os.system('cls')
             print("Opcion 4")
+            opcion4(lista_libros)
             os.system('pause')
         elif opcion == 5:
             os.system('cls')
@@ -348,7 +370,7 @@ def main():
                 print("Actualizar libro")
                 listar_libros(lista_libros)
                 l =opcion9(lista_libros)
-                if l != None:
+                if l == True:
                     print("Lista Actualizada")
                     listar_libros(lista_libros)
             os.system('pause')
