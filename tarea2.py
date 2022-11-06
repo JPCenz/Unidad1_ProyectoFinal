@@ -351,38 +351,42 @@ def main():
             x = system('cls') 
         else: 
             x = system('clear')
+
+    def pause():
+        if name == 'nt':
+            print("\nPresione una tecla para continuar ...")
+            y = system('pause')
+        else:
+            y = system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
+            clear()
+
     while True:
         opcion = menu_principal()
         if opcion == 1:
             clear()
             print ("Opcion 1")
             opcion1()
-            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
-            clear()
+            pause()
         elif opcion == 2:
             clear()
             print ("Opcion 2")
             opcion2()
-            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
-            clear()
+            pause()
         elif opcion == 3:
             clear()
             print("Opcion 3")
             opcion3()
-            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
-            clear()
+            pause()
         elif opcion == 4:
             clear()
             print("Opcion 4")
             opcion4()
-            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
-            clear()
+            pause()
         elif opcion == 5:
             clear()
             print("Opcion 5")
             opcion5()
-            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
-            clear()
+            pause()
         elif opcion == 6:
             print("SALIR")
             break       
