@@ -1,4 +1,4 @@
-import os, time, requests
+import time, requests
 from os import system, name
 
 def mostrar_mensaje_espera(segundos=5):

@@ -1,27 +1,33 @@
-import os,csv
-
+import csv
+from os import system, name
 
 class Libro:
     __id :str
     __titulo : str
-    __genero = str
+    __genero : str
     __isbn : str
     __editorial : str
-    __autor : list
+    __autor : list = []
+    count = 1
 
-    def __init__(self,id,titulo,genero,isbn,editorial) -> None:
-        self.__id = id
+
+    def __init__(self,titulo,genero,isbn,editorial) -> None:
         self.__titulo = titulo
         self.__genero = genero
         self.__isbn = isbn
         self.__editorial = editorial
+        self.__id = self.count
+        self.__autor = list()
+        Libro.count += 1
 
     @property
     def id(self):
         return self.__id
-    @id.setter
-    def id(self, id: str):
-        self.__id = id
+    # @id.setter
+    # def id(self):
+    #     self.count += 1 
+    #     self.__id = self.count
+
 
     @property
     def titulo(self):
@@ -55,18 +61,22 @@ class Libro:
     def autor(self):
         return self.__autor  
     @autor.setter
-    def autor(self, autor):
-        self.__autor = autor
+    def autor(self, autor :str):
+        self.__autor=self.__autor.append(autor)
+        autor = autor.strip()
+        lista_temp =[]
+        for a in autor.split(sep=","):
+            lista_temp.append(a.strip())
+        if len(lista_temp) >1:
+            self.__autor = lista_temp
+        else:
+            self.__autor= [autor] 
+
+    def add_autor(self, autor : str) :
+        self.__autor.append(autor)
 
     def __del__(self):
         pass
-
-
-
-
-
-
-
 
 
 #lee un archivo csv y retorna una lista de objetos Libros
@@ -80,16 +90,9 @@ def abrir_archivo(file ="libros.csv" )-> list[Libro]:
                 if line_count == 0:                   
                     line_count += 1
                 else:
-                    i = Libro(row[0],row[1],row[2],row[3],row[4])
-                    lista=[]
-                    autor = row[5]              #en caso de que tenga varios autores convertir a lista
-                    autor = autor.strip()
-                    for a in autor.split(sep=","):
-                        lista.append(a.strip())
-                    if len(lista) >1:
-                        i.autor=lista
-                    else:
-                        i.autor = autor
+                    i = Libro(row[0],row[1],row[2],row[3])
+                    autor = row[4]             
+                    i.autor = autor
                     lista_libros.append(i)                   
                     line_count += 1
         return lista_libros
@@ -101,144 +104,221 @@ def escribir_archivo(Libros: list[Libro],file='libros_guardados.csv')-> None :
     try:
         with open(file, 'w',newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(["Id","Titulo","Genero","ISBN","Editorial","Autor"])
+            writer.writerow(["Titulo","Genero","ISBN","Editorial","Autor"])
             for l in Libros:
-                if type(l.autor) == type([]):
-                    autores = ','.join(l.autor)
-                    writer.writerow([l.id,l.titulo,l.genero,l.isbn,l.editorial,autores])
-                else:
-                    writer.writerow([l.id,l.titulo,l.genero,l.isbn,l.editorial,l.autor])
-        print("Libros Guardados Exitosamente en el archivo libros_guardados.csv ")
+                autores = ','.join(l.autor)
+                writer.writerow([l.titulo,l.genero,l.isbn,l.editorial,autores])
+        print("\nLibros Guardados Exitosamente en el archivo libros_guardados.csv ")
 
     except Exception as ex:
         print(ex)
     
 #Reciba una lista de objetos Libros imprime en pantalla sus atributpos
-def listar_libros(list_libros : list[Libro] ) ->list:
+def listar_libros(list_libros : list[Libro] ) ->list[Libro]:
     print("==============================  Libros  ===============================================")
-    print("     Titulo         |   Genero  |        ISBN    |   Editorial   |   Autor (es)")
-    for i,libro in enumerate(list_libros,start=1):
-        print(f'{i}-> {libro.titulo}    |       {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
+    print("ID|     Titulo         |   Genero  |        ISBN    |   Editorial   |   Autor (es)")
+    for libro in list_libros:
+        print(f'{libro.id}-> {libro.titulo}    |       {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
         print("---------------------------------------------------------------------------------------")
     print("=======================================================================================")
+    return list_libros
 
-def buscar_por_isbn(isbn: str, list_libros: list[Libro]) -> Libro:
+def buscar_por_n_autores(list_libros: list[Libro],nro_autor: int) -> Libro:
+    libros_encontrados =[]
     for l in list_libros:
-        if isbn.strip()== l.isbn:
-            return l
-    return None
+        if type(l.autor) == type([]):
+            if len(l.autor) == nro_autor:
+                libros_encontrados.append(l)
+        else:
+            if nro_autor == 1:
+                libros_encontrados.append(l)
+    return libros_encontrados
+                
 
 def ord_por_titulo(list_libros : list[Libro]) -> list:
     ordenado = sorted(list_libros,key=lambda a : a.titulo)
     return ordenado
 
-def buscar_por_titulo(titulo: str, list_libros: list[Libro]) -> Libro:
+def buscar_por_id(id: int, list_libros: list[Libro]) -> Libro:
     for l in list_libros:
-        if titulo.strip()== l.titulo:
+        if id == l.id:
             return l
     return None
 
-def buscar_por_autor(autor7: str, lista_libros7: list[Libro]):
+def buscar_por_isbn(isbn: str, list_libros: list[Libro]) -> Libro:
+    lista_isbn :list [Libro]= []
+    for l in list_libros:
+        if isbn.strip()== l.isbn:
+            lista_isbn.append(l)
+
+    if lista_isbn != None:
+        return lista_isbn
+    else:
+        return None
+
+def buscar_por_titulo(titulo: str, list_libros: list[Libro]) -> Libro:
+    lista_titulo :list [Libro]= []
+    for l in list_libros:
+        if titulo.strip()== l.titulo:
+            lista_titulo.append(l)
+
+    if lista_titulo != None:
+        return lista_titulo
+    else:
+        return None
+
+
+def buscar_por_autor(autor7: str, lista_libros7: list[Libro]) -> Libro:
+    lista_igual_autor :list [Libro]= []
     for l7 in lista_libros7:
-        if autor7.strip() == l7.autor:
-            return l7
-    return None
+        for autor in l7.autor:
+            if autor7.strip() == autor:
+                lista_igual_autor.append(l7)
+                
+    if lista_igual_autor != None:
+        return lista_igual_autor
+    else:
+        return None
 
 def buscar_por_editorial(editorial7: str, lista_libros7: list[Libro]) -> Libro:
+    lista_editorial :list [Libro]= []
     for l7 in lista_libros7:
         if editorial7.strip() == l7.editorial:
-            return l7
-    return None
+            lista_editorial.append(l7)
+
+    if lista_editorial != None:
+        return lista_editorial
+    else:
+        return None
 
 def buscar_por_genero(genero7: str, lista_libros7: list[Libro]) -> Libro:
+    lista_genero :list [Libro]= []
     for l7 in lista_libros7:
         if genero7.strip() == l7.genero:
-            return l7
-    return None
+            lista_genero.append(l7)
 
-
+    if lista_genero != None:
+        return lista_genero
+    else:
+        return None
 
 def opcion1() -> list[Libro]:
     print("Leyendo archivo libros.csv...")
     lista_libros = abrir_archivo(file='libros.csv')
     return lista_libros
 
-# Se agrega libro con datos ingresados por consola
-def opcion3(lista_libros: list[Libro]):
-
-    print("\nIngrese los datos del libro para su agregacion.\n")
-    fieldnames = ['Id','Titulo','Genero','ISBN','Editorial','Autor']
-    id3 = input('Ingrese Id: ')
-    titulo3 = input('Ingrese titulo: ')
-    genero3 = input('Ingrese genero: ')
-    isbn3 = input('Ingrese codigo isbn: ')
-    editorial3 = input('Ingrese editorial: ')
-    autor_list = []
-    
-    while True:
-        autor = input('Ingrese autor: ')
-        autor_list.append(autor)
-        valor=input('Desea agregar otro autor? (S/N): ')
-        if valor.lower() == 's':
-            True
-        else:
-            break
-    autor3 = " , ".join(autor_list)
-
-    libro3 = Libro(id3,titulo3,genero3,isbn3,editorial3)
-    libro3.autor = autor3
-    lista_libros.append(libro3)
-    
-    return lista_libros
-
-
-# Se elimina libro de la lista libros.
-def opcion4(lista_libros: list[Libro]) -> list:
-    k = 1
-    print("De acuerdo a la siguiente lista, seleccione el libro a eliminar: ")
-    for count, i in enumerate(lista_libros, start=1):
-        print(f'Libro {count}> (Titulo: {i.titulo} / Autor: {i.autor})  ')
-        k += 1
-
-    while True:
-        valor = input('\nIngrese el numero de libro a eliminar: ')
-        if valor.isnumeric():
-            if int(valor) in range(1,k):
-                for i in range (1,k):
-                    if i == int(valor):
-                        valor = int(valor)-1
-                break
-            else:
-                print("El valor ingresado no es correcto.")
-        else:
-            print("El valor ingresado no es correcto.")
-    
-    lista_libros.pop(valor)
-    return lista_libros
-
 #solicita una opcion 1 o 2  y retorna un libro resultado de la busqueda
-def opcion5(lista_libros) -> Libro:
+def opcion5(lista_libros: list[Libro]) -> Libro:
     libro1 : Libro
     opcion = 0
     while opcion not in (1,2):
         print("1.  Buscar por titulo")
         print("2.  Buscar por ISBN")
-        print("Ingrese 1 o 2 ")
+        print("\nIngrese 1 o 2 ")
         opcion = pedirNumeroEntero()
-    
+
     if opcion == 1:
-        titulo = input("Ingrese el titulo a buscar :")
+        titulo = input("\nIngrese el titulo a buscar :")
         libro1 = buscar_por_titulo(titulo,lista_libros)
         return libro1
 
     elif opcion == 2:
-        isbn = input("Ingrese el ISBN a buscar:")
+        isbn = input("\nIngrese el ISBN a buscar:")
         libro1 = buscar_por_isbn(isbn,lista_libros)
         return libro1
     else: 
         return None
+def opcion8(lista_libros: list[Libro])-> list[Libro]:
+    libros_encontrados = []
+    opcion = 0
+    while opcion not in range(1,10):
+        print("\nIngrese el numero de autores del libro que desea buscar: ")
+        opcion = pedirNumeroEntero()
+        libros_encontrados = buscar_por_n_autores(lista_libros,opcion)
+        return libros_encontrados
+
     
+def actualizar_libro(libro, id: int,titulo,genero,isbn,editorial,autor) -> Libro:
+    libro.titulo =titulo
+    libro.genero= genero
+    libro.isbn = isbn
+    libro.editorial = editorial
+    libro.autor = autor
+    return libro
+
+def opcion9(lista_libros : list[Libro]) -> bool:
+    print("\nPor favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
+    opcion = 0
+    libro = None
+    while libro == None:
+        opcion = pedirNumeroEntero() 
+        libro = buscar_por_id(opcion,lista_libros)
+        if libro:
+            titulo=input("\nIngrese nuevo titulo: ")
+            genero=input("Ingrese nuevo genero: ")
+            isbn=input("Ingrese nuevo isbn: ")
+            editorial=input("Ingrese nuevo editorial: ")
+            #autor=input("Ingrese nuevo autor (si son mas de uno separalo con comas): ")
+            l_autor = []
+            while True:
+                autor_x = input('Ingrese autor: ')
+                l_autor.append(autor_x)
+                valor=input('Desea agregar otro autor? (S/N): ')
+                if valor.lower() == 's':
+                    True
+                else:
+                    autor = ','.join(l_autor)
+                    break
+
+
+            actualizar_libro(libro,opcion,titulo,genero,isbn,editorial,autor)
+            return True
+        elif opcion == 0:
+            return False
+        else:
+            print("\nID no valido")
+            print("\nPor favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
+
+def opcion3(lista_libros: list[Libro]):
+
+    print("\nIngrese los datos del libro para su agregacion.\n")
+    titulo3 = input('Ingrese titulo: ')
+    genero3 = input('Ingrese genero: ')
+    isbn3 = input('Ingrese codigo isbn: ')
+    editorial3 = input('Ingrese editorial: ')
+    libro3 = Libro(titulo3,genero3,isbn3,editorial3)
     
+    while True:
+        autor = input('Ingrese autor: ')
+        libro3.add_autor(autor)
+        valor=input('Desea agregar otro autor? (S/N): ')
+        if valor.lower() == 's':
+            True
+        else:
+            break
+    lista_libros.append(libro3)
+    print("\nEl libro se agrego correctamente.")
+    return lista_libros
+
+def opcion4(list_libros :list[Libro]):
+    listar_libros(list_libros)
+    print("\nPor favor ingrese una ID valido (numero) del libro a eliminar o presione 0 para salir:")
+    opcion = 0
+    libro = None
+    while libro == None:
+        opcion = pedirNumeroEntero() 
+        libro = buscar_por_id(opcion,list_libros)
+        if libro:
+            for i,l in enumerate(list_libros):
+                if l.id == opcion:
+                    list_libros.pop(i)
+        elif opcion == 0:
+            return False
+        else:
+            print("ID no valido")
+            print("\nPor favor ingrese una ID valido (numero) del libro a eliminar o presione 0 para salir:")
+
+
 def opcion7(lista_libros):
     libro7 : Libro
     opcion7=0
@@ -273,26 +353,12 @@ def opcion7(lista_libros):
         return libro7
 
 
+def header():
+    print("==============================  Libros  ===============================================")
+    print("Titulo         |   Genero  |        ISBN    |   Editorial   |   Autor (es)")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def imprimir_resultados(libro:Libro):
+    print(f'{libro.titulo}    |    {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
 
 
 #pide un numero entero al usuario y valida si es entero
@@ -313,7 +379,7 @@ def menu_principal():
         print('=============================================')
         print("1.  Leer archivos de disco duro")
         print("2.  Listar libros")
-        print("3.  Agregar ibro")
+        print("3.  Agregar libro")
         print("4.  Eliminar libro")
         print("5.  Buscar libro por ISBN o titulo") 
         print("6.  Ordenar libro por Titulo")  
@@ -327,66 +393,100 @@ def menu_principal():
         opcion = pedirNumeroEntero()
         return opcion
 def main():
+
+    def clear():
+        if name == 'nt': 
+            x = system('cls') 
+        else: 
+            x = system('clear')
+
+    def pause():
+        if name == 'nt':
+            print("\nPresione una tecla para continuar ...")
+            y = system('pause')
+        else:
+            y = system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
+            clear()
     lista_libros=[]
     while True:
         opcion = menu_principal()
         if opcion == 1:
-            os.system('cls')
+            clear()
             print ("Opcion 1")
             lista_libros = opcion1() 
             print(f"cantidad de libros cargados: {len(lista_libros)}")
-            os.system('pause')
+            pause()
         elif opcion == 2:
-            os.system('cls')
+            clear()
             print ("Opcion 2")
             listar_libros(lista_libros)
-            os.system('pause')
+            pause()
         elif opcion == 3:
-            os.system('cls')
+            clear()
             print("Opcion 3")
             opcion3(lista_libros)
-            os.system('pause')
+            pause()
         elif opcion == 4:
-            os.system('cls')
+            clear()
             print("Opcion 4")
             opcion4(lista_libros)
-            os.system('pause')
+            pause()
         elif opcion == 5:
-            os.system('cls')
+            clear()
             print("Opcion 5")
             libro = opcion5(lista_libros)
-            if libro == None:
-                print("No se encontraron coincidencias")
-            else:
-                print("Resultados :")
-                print(f'{libro.titulo}    |    {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
-            os.system('pause')
+            print("\nResultados :")
+            header()
+            for li in libro:
+                if libro == None:
+                    print("No se encontraron coincidencias")
+                else:
+                    imprimir_resultados(li)
+            pause()
         elif opcion == 6:
-            os.system('cls')
+            clear()
             print("Opcion 6")
             lista_libros = ord_por_titulo(lista_libros)
             print("Lista ordenada")
             listar_libros(lista_libros)
-            os.system('pause')
+            pause()
         elif opcion == 7:
-            os.system('cls')
+            clear()
             print("Opcion 7")
             libro7 = opcion7(lista_libros)
-            if libro7 == None:
-                print('No se encontró libro con el valor ingresado')
-            else:
-                print(f'{libro7.titulo}    |    {libro7.genero} | {libro7.isbn}  |  {libro7.editorial}  | {libro7.autor}')
-            os.system('pause')
+            print("\nResultados :")
+            header()
+            for lib in libro7:
+                if lib == None:
+                    print('No se encontró libro con el valor ingresado')
+                else:
+                    imprimir_resultados(lib)
+            pause()
         elif opcion == 8:
-            os.system('cls')
+            clear()
             print("Opcion 8")
-            os.system('pause')
+            resultado = opcion8(lista_libros)
+            if len(resultado) <1:
+                print("No se encontraron resultados")
+            else:
+                print("Resultados")
+                listar_libros(resultado)
+            pause()
         elif opcion == 9:
-            os.system('cls')
+            clear()
             print("Opcion 9")
-            os.system('pause')
+            if len(lista_libros) == 0:
+                print("No hay datos para actualizar, aniada libros ")
+            else:
+                print("Actualizar libro")
+                listar_libros(lista_libros)
+                l =opcion9(lista_libros)
+                if l == True:
+                    print("Lista Actualizada")
+                    listar_libros(lista_libros)
+            pause()
         elif opcion == 10:
-            os.system('cls')
+            clear()
             print("Opcion 10")
             try:
                 if len(lista_libros) == 0:
@@ -396,12 +496,12 @@ def main():
                     
             except Exception as ex:
                 print(ex)
-            os.system('pause') 
+            pause()
         elif opcion == 11:
             print("SALIR")
             break       
         else:
-            os.system('cls')
+            clear()
             print("Ingresa un nuevo numero :")
         
     
