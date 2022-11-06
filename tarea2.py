@@ -1,166 +1,186 @@
-import os, requests,time
+import os, time, requests
+from os import system, name
 
-#Recibe la cantidad en segundos de espera 
 def mostrar_mensaje_espera(segundos=5):
     #importar libreria time
     print("Espere mientras se obtiene la informacion del servidor")
-    for i in range(segundos):        
+    for i in range(segundos):      
         print(" -- ",end=" ",flush=True)
         time.sleep(1)
     print("")
 
 def opcion1():
-
-    while True:
-        n = input('Ingrese numero de generacion [1-8]: ')
-        if n.isnumeric():
-            n=int(n)
-            if n in [1,2,3,4,5,6,7,8]:
-                if n == 1:
-                    n_gen = "i"
-                elif n == 2:
-                    n_gen = "ii"
-                elif n == 3:
-                    n_gen = "iii"
-                elif n == 4:
-                    n_gen = "iv"
-                elif n == 5:
-                    n_gen = "v"
-                elif n == 6:
-                    n_gen = "vi"
-                elif n == 7:
-                    n_gen = "vii"
-                else:
-                    n_gen = "viii"
-                
-                try:
-                    url = f'https://pokeapi.co/api/v2/generation/{n}'
-                    lista_poke = []
-                    habi_poke = []
-                    URL_poke = []
-                    lista_url = []
-                    response = requests.get(url)
-
-                    # LISTA DE POKEMONES:
-                    data = response.json()['pokemon_species']
-                    for i in data:
-                        lista_poke.append(i['name'])
-                        lista_url.append(i['url'])
-
-                    for j in lista_url:
-                        habilidad = []
-                        link = []
-                        respo = requests.get(j)
-                        url1 = respo.json()['varieties'][0]['pokemon']['url']
-
-                        response1 = requests.get(url1)
-                        dataj = response1.json()['abilities']
-                        datak = response1.json()['sprites']['versions'][f'generation-{n_gen}']
-                        for k in dataj:
-                            habilidad.append(k['ability']['name'])
-                        habi_poke.append(habilidad)
-                        for l in datak:
-                            link.append(datak[l]['front_default'])
-                        URL_poke.append(link)
-
-                    for count, (i,j,k) in enumerate(zip(lista_poke,habi_poke,URL_poke)):
-                        print(f'POKE: {i} HABILIDAD: {j} LINK: {k}')
-                    break
-
-                except Exception as ex:
-                    print(ex)
-            else:
-                print('Ingrese una generacion aceptable [1-8]: ')
-        else:
-            print('Ingrese una generacion aceptable [1-8]: ')
-
-def buscar_por_forma(forma):
     try:
-        mostrar_mensaje_espera(3)
-        res = requests.get(f'https://pokeapi.co/api/v2/pokemon-form/{forma}')
-        res.raise_for_status()
-        data = res.json()
-        imagen = data['sprites']["front_default"]
-        url_pokemon = data['pokemon']['url']
-        contador = 0
-        res1 = requests.get(url_pokemon)
-        res1.raise_for_status()
-        data1= res1.json()
-        nombre : str = data1['name']
-        habilidades= []
-        imagen : str 
-        for i in data1['abilities']:
-            habilidades.append(i['ability']['name'])
-        contador = contador + 1       
-        # print("----------------------------------------------------------------------------------")
-        print(f"{contador}.  POKE: {nombre.capitalize()}, Habilidades: {','.join(habilidades)}, Imagen: {imagen}")
-        print("-------------------------------------------------------------------------------------")        
-    except requests.HTTPError as ex:
-        print("Forma no encontrada")
+        mostrar_mensaje_espera(2)
+        url0 = 'https://pokeapi.co/api/v2/generation/'
+        response0 = requests.get(url0)
+        data0 = response0.json()
+        generaciones = []
         
+        for f in data0['results']:
+            generaciones.append(f['name'])
+        # Se muestra la lista de generaciones de pokemons
+        print(f'\nLISTA DE GENERACIONES POKEMONS.\n')
+        for c, h in enumerate(generaciones, start=1):
+            print(f'{c}: {h}')
 
-def opcion2():
-    print("Ejemplos de formas: luxio, luxray, metang, electrike, volbeat, carvanha,voltorb")
-    a = input("Ingrese una forma de pokemon a buscar:").lower()
-    try:
-        buscar_por_forma(a)
+        while True:
+            valor = input("\nINGRESE UN NUMERO DE GENERACION\nValor: ")
+            if valor.isnumeric():
+                valor = int(valor)
+                if valor in range(1,len(generaciones)+1):
+                    count = 0
+                    print(f"\nSe muestra lista de Pokemons de la generacion {valor}:\n")
+                    for i in range(1,len(generaciones)+1):
+                        if valor == i:
+                            url1 = f'https://pokeapi.co/api/v2/generation/{valor}/'
+                            response1 = requests.get(url1)
+                            data1 = response1.json()['pokemon_species']
+                            for j in data1:
+
+                                # Se muestra el nombre del pokemon segun su generacion.
+                                nombre_pokemon = j['name']
+                                url_species_pokemon =j['url']
+
+                                response2 = requests.get(url_species_pokemon)
+                                data2 = response2.json()['varieties'][0]['pokemon']
+                                url_datapokemon = data2['url']
+
+                                # Se muestra url imagen del pokemon segun su generacion.
+                                lista_habilidades = []
+                                response3 = requests.get(url_datapokemon)
+                                data3 = response3.json()['abilities']
+                                url_imagenpokemon = response3.json()['sprites']['front_default']
+
+                                # Se muestra las habilidades del pokemon segun su generacion.
+                                for m in data3:
+                                    lista_habilidades.append(m['ability']['name'])
+
+                                #se imprimen datos segun se va analizando informacion.
+                                count += 1
+                                print(f"{count}>> POKEMON: {nombre_pokemon}  ||  HABILIDADES: {','.join(lista_habilidades)}\n\tURL_IMAGEN: {url_imagenpokemon}")
+                                print("---------------------------------------------------------------------------------------------------------")
+
+                    print(f'\nLa lista de pokemones de la generacion {valor} contiene {count} pokemones.')                             
+                    break
+                else:
+                    print('Ingrese una habilidad aceptable [1-8]: ')
+            else:
+                print('Ingrese una habilidad aceptable [1-8]: ')
+
     except Exception as ex:
         print(ex)
-    input("Presione enter para continuar")
 
 
+def opcion2():
+    try:
+        mostrar_mensaje_espera(2)
+        url0 = 'https://pokeapi.co/api/v2/pokemon-shape/'
+        response0 = requests.get(url0)
+        data0 = response0.json()
+        formas = []
+        for g in data0['results']:
+            formas.append(g['name'])
+        
+        # Se muestra la lista de formas pokemons
+        print(f'\nLISTA DE FORMAS POKEMONS.\n')
+        for c, i in enumerate(formas, start=1):
+            print(f'Forma {c}: {i}')
+            
+        while True:
+            valor = input("\nINGRESE EL NUMERO DE LA FORMA\nValor: ")
+            if valor.isnumeric():
+                valor = int(valor)
+                if valor in range(1,len(formas)+1):
+                    count = 0
+                    print(f"\nSe muestra lista de pokemons de la forma {valor}:\n")
+                    for i in range(1,len(formas)+1):
+                        if valor == i:
+                            url1 = f'{url0}{valor}/'                          
+                            response1 = requests.get(url1)
+                            data1 = response1.json()['pokemon_species']
+                            for j in data1:
+                                # Se muestra el nombre del pokemon segun su forma.
+                                nombre_pokemon = j['name']
+                                url_species_pokemon = j['url']
+
+                                response2 = requests.get(url_species_pokemon)
+                                data2 = response2.json()['varieties'][0]['pokemon']
+                                url_datapokemon = data2['url']
+
+                                # Se muestra url imagen del pokemon segun su forma.
+                                lista_habilidades = []
+                                response3 = requests.get(url_datapokemon)
+                                data3 = response3.json()['abilities']
+                                url_imagenpokemon = response3.json()['sprites']['front_default']
+
+                                # Se muestra las habilidades del pokemon segun su forma.
+                                for o in data3:
+                                    lista_habilidades.append(o['ability']['name'])
+
+                                #se imprimen datos segun se va analizando informacion.
+                                count += 1
+                                print(f"{count}>> POKEMON: {nombre_pokemon}  ||  HABILIDADES: {','.join(lista_habilidades)}\n\tURL_IMAGEN: {url_imagenpokemon}")
+                                print("---------------------------------------------------------------------------------------------------------")
+
+                    print(f'\nLa lista de pokemones de forma {valor} contiene {count} pokemones.')
+                    break
+                else:
+                    print('Ingrese una habilidad aceptable [1-14]: ')
+            else:
+                print('Ingrese una habilidad aceptable [1-14]: ')
+    except Exception as ex:
+        print(ex)
 
 
 def opcion3():
     try:
+        mostrar_mensaje_espera(2)
         url = 'https://pokeapi.co/api/v2/ability/'
-        response = requests.get(url)
-        data0 = response.json()
+        response0 = requests.get(url)
+        data0 = response0.json()
         habilidades = []
-        url_habilidades = []
-        for i in data0['results']:
-            habilidades.append(i['name'])
-            url_habilidades.append(i['url'])
-        k = 1
-        for i in habilidades:
-            print(f'Habilidad {k}: {i}')
-            k +=1
+        for g in data0['results']:
+            habilidades.append(g['name'])
+
+        # Se muestra la lista de habilidades pokemons
+        print(f'\nLISTA DE HABILIDADES POKEMONS.\n')
+        for c, h in enumerate(habilidades, start=1):
+            print(f'Habilidad {c}: {h}')
+
         while True:
             valor = input("\nINGRESE UN NUMERO DE HABILIDAD\nValor: ")
             if valor.isnumeric():
                 valor = int(valor)
-                if valor in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]:
-                    for i in range(1,21):
+                if valor in range(1,len(habilidades)+1):
+                    count = 0
+                    print(f"\nSe muestra lista de pokemons de la habilidad {valor}:\n")
+                    for i in range(1,len(habilidades)+1):
                         if valor == i:
-                            url1 = f'https://pokeapi.co/api/v2/ability/{valor}'
-                            lista_pokemon = []
-                            habilidades_pokemon = []
-                            url_imagenpokemon = []
-                            
+                            url1 = f'{url}{valor}/'                          
                             response1 = requests.get(url1)
-                            data1 = response1.json()['pokemon']
-                            lista = []
-                            url_pokemon = []
-                            for j in data1:
-                                lista.append(j)
-                            
-                            for k in range (len(data1)):
-                                lista_pokemon.append(lista[k]['pokemon']['name'])
-                                url_pokemon.append(lista[k]['pokemon']['url'])
-                            
-                            for l in url_pokemon:
+                            data1 = response1.json()
+                            for j in data1['pokemon']:
+                                # Se muestra el nombre del pokemon segun su habilidad.
+                                nombre_pokemon = j['pokemon']['name']
+                                url_datapokemon = j['pokemon']['url']
+
+                                # Se muestra url imagen del pokemon segun su habilidad.
                                 lista_habilidades = []
-                                respons = requests.get(l)
-                                data2 = respons.json()['abilities']
-                                data3 = respons.json()['sprites']['front_default']
-                                url_imagenpokemon.append(data3)
-                                for m in data2:
-                                    lista_habilidades.append(m['ability']['name'])
-                                habilidades_pokemon.append(lista_habilidades)
-                            
-                            print(f"\nLista de pokemones con la habilidad {valor} son:\n")
-                            for count, (i,j,k) in enumerate(zip(lista_pokemon,habilidades_pokemon,url_imagenpokemon), start=1):
-                                print(f'{count}> Pokemon: {i} >Habilidades: {j} >Url_img: {k}')
+                                response2 = requests.get(url_datapokemon)
+                                data2 = response2.json()['abilities']
+                                url_imagenpokemon = response2.json()['sprites']['front_default']
+
+                                # Se muestra las habilidades del pokemon segun su habilidad.
+                                for k in data2:
+                                    lista_habilidades.append(k['ability']['name'])
+
+                                #se imprimen datos segun se va analizando informacion.
+                                count += 1
+                                print(f"{count}>> POKEMON: {nombre_pokemon}  ||  HABILIDADES: {','.join(lista_habilidades)}\n\tURL_IMAGEN: {url_imagenpokemon}")
+                                print("---------------------------------------------------------------------------------------------------------")
+                                
+                    print(f'\nLa lista de pokemones con la habilidad {valor} contiene {count} pokemones.')
                     break
                 else:
                     print('Ingrese una habilidad aceptable [1-20]: ')
@@ -172,115 +192,131 @@ def opcion3():
 
 def opcion4():
     try:
-        url = 'https://pokeapi.co/api/v2/pokemon-habitat/'
-        response = requests.get(url)
-        data0 = response.json()
+        mostrar_mensaje_espera(2)
+        url0 = 'https://pokeapi.co/api/v2/pokemon-habitat/'
+        response0 = requests.get(url0)
+        data0 = response0.json()
         habitad = []
-        url_habitad = []
-        for i in data0['results']:
-            habitad.append(i['name'])
-            url_habitad.append(i['url'])
-        k = 1
-        for i in habitad:
-            print(f'Habitad {k}: {i}')
-            k +=1
+
+        for g in data0['results']:
+            habitad.append(g['name'])
+
+        # Se muestra la lista de habitads pokemons
+        print(f"\nLISTA DE HABITAD'S POKEMONS.\n")
+        for c, h in enumerate(habitad, start=1):
+            print(f'Habitad {c}: {h}')
+
         while True:
             valor = input("\nINGRESE UN NUMERO DE HABITAD\nValor: ")
             if valor.isnumeric():
                 valor = int(valor)
-                if valor in [1,2,3,4,5,6,7,8,9]:
-                    for i in range(1,10):
+                if valor in range(1,len(habitad)+1):
+                    count = 0
+                    print(f"\nSe muestra lista de pokemons del habitad {valor}:\n")
+                    for i in range(1,len(habitad)+1):
                         if valor == i:
-                            url1 = f'https://pokeapi.co/api/v2/pokemon-habitat/{valor}/'
-                            lista_pokemon = []
-                            habilidades_pokemon = []
-                            url_imagenpokemon = []
-                            
+                            url1 = f'{url0}{valor}/'                            
                             response1 = requests.get(url1)
                             data1 = response1.json()['pokemon_species']
                             url_pokemon = []
                             for j in data1:
-                                lista_pokemon.append(j['name'])
-                                url_pokemon.append(j['url'])
+                                # Se muestra el nombre del pokemon segun su habitad.
+                                nombre_pokemon = j['name']
+                                url_pokemon = j['url']
 
-                            url_data_pokemons = []
-                            for k in url_pokemon:
-                                response2 = requests.get(k)
+                                response2 = requests.get(url_pokemon)
                                 data2 = response2.json()['varieties'][0]['pokemon']
-                                url_data_pokemons.append(data2['url'])
-                            
-                            for l in url_data_pokemons:
-                                habilidades_temporal = []
-                                response3 = requests.get(l)
+                                url_datapokemon = data2['url']
+
+                                # Se muestra url imagen del pokemon segun su habitad.
+                                lista_habilidades = []
+                                response3 = requests.get(url_datapokemon)
                                 data3 = response3.json()['abilities']
-                                data4 = response3.json()['sprites']['front_default']
-                                url_imagenpokemon.append(data4)
-                                for m in data3:
-                                    habilidades_temporal.append(m['ability']['name'])
-                                habilidades_pokemon.append(habilidades_temporal)
-                          
-                            print(f"\nLa lista de pokemones con la Habitad {valor} son:\n")
-                            for count, (i,j,k) in enumerate(zip(lista_pokemon,habilidades_pokemon,url_imagenpokemon), start=1):
-                                print(f'{count}> Pokemon: {i} >Habilidades: {j} >Url_img: {k}')
+                                url_imagenpokemon = response3.json()['sprites']['front_default']
+
+                                # Se muestra las habilidades del pokemon segun su habitad.
+                                for k in data3:
+                                    lista_habilidades.append(k['ability']['name'])
+
+                                #se imprimen datos segun se va analizando informacion.
+                                count += 1
+                                print(f"{count}>> POKEMON: {nombre_pokemon}  ||  HABILIDADES: {','.join(lista_habilidades)}\n\tURL_IMAGEN: {url_imagenpokemon}")
+                                print("---------------------------------------------------------------------------------------------------------")
+                                
+                    print(f'\nLa lista de pokemones con la habilidad {valor} contiene {count} pokemones.')
                     break
                 else:
-                    print('Ingrese un habitat aceptable [1-9]: ')
+                    print('Ingrese una habilidad aceptable [1-9]: ')
             else:
                 print('Ingrese una habilidad aceptable [1-9]: ')
     except Exception as ex:
         print(ex)
 
-def buscar_por_tipo(tipo: str):
+def opcion5():
     try:
-        res = requests.get(f'https://pokeapi.co/api/v2/type/{tipo}')
-        res.raise_for_status()
-        data = res.json()
-        count_encontrados = 0
-        url_pokemon=[]
-        contador = 0
-        for i in data['pokemon']:
-            url_pokemon.append(i['pokemon']['url'])
-            count_encontrados = count_encontrados + 1      
-        print(f"Se encontraron {count_encontrados} pokemones")
-        mostrar_mensaje_espera(5)
-        for url in url_pokemon:
-            res1=requests.get(url)
-            res1.raise_for_status()
-            data = res1.json()
-            nombre = data['name']
-            habilidades= []
-            imagen : str 
-            if data['sprites']["front_default"] == None:
-                imagen = "No esta disponible la url"
+        mostrar_mensaje_espera(2)
+        url0 = 'https://pokeapi.co/api/v2/type/'
+        response = requests.get(url0)
+        data0 = response.json()
+        tipo = []
+
+        for g in data0['results']:
+            tipo.append(g['name'])
+
+        # Se muestra la lista de tipos de pokemons
+        print(f"\nLISTA DE TIPOS POKEMONS.\n")
+        for c, h in enumerate(tipo, start=1):
+            print(f'Tipo {c}: {h}')
+
+        while True:
+            valor = input("\nINGRESE UN NUMERO DE LA LISTA TIPO\nValor: ")
+            if valor.isnumeric():
+                valor = int(valor)
+                if valor in range(1,len(tipo)+1):
+                    count = 0
+                    print(f'\nSe muestra lista de pokemons del tipo {valor}:\n')
+                    for i in range(1,len(tipo)+1):
+                        if valor == i:
+                            if valor == 20:
+                                valor = 10002
+                                print('No hay pokemones con la forma 20.')
+                                break
+                            if valor == 19:
+                                valor = 10001
+                                print('No hay pokemones con la forma 19.')
+                                break
+
+                            url1 = f'{url0}{valor}/'                           
+                            response1 = requests.get(url1)
+                            data1 = response1.json()
+                            for j in data1['pokemon']:
+                                # Se muestra el nombre del pokemon segun su tipo.
+                                nombre_pokemon = j['pokemon']['name']
+                                url_datapokemon = j['pokemon']['url']
+
+                                # Se muestra url imagen del pokemon segun su tipo.
+                                lista_habilidades = []
+                                response2 = requests.get(url_datapokemon)
+                                data2 = response2.json()['abilities']
+                                url_imagenpokemon = response2.json()['sprites']['front_default']
+
+                                # Se muestra las habilidades del pokemon segun su tipo.
+                                for k in data2:
+                                    lista_habilidades.append(k['ability']['name'])
+
+                                #se imprimen datos segun se va analizando informacion.
+                                count += 1
+                                print(f"{count}>>  POKEMON: {nombre_pokemon} ||  HABILIDADES: {', '.join(lista_habilidades)}\n\tURL_IMAGEN: {url_imagenpokemon}")
+                                print("------------------------------------------------------------------------------------------------------")
+
+                    print(f'\nLa lista de pokemones del tipo {i} contiene {count} pokemones.\n')
+                    break
+                else:
+                    print('Ingrese una habilidad aceptable [1-20]: ')
             else:
-                imagen =data['sprites']["front_default"]
-            for i in data['abilities']:
-                habilidades.append(i['ability']['name'])
-            contador = contador + 1       
-            # print("----------------------------------------------------------------------------------")
-            print(f"{contador}.  POKE:{nombre}, Habilidades:{habilidades}, Imagen: {imagen}")
-            print("-------------------------------------------------------------------------------------")        
-        print(f"Se Mostraron: {contador} POKEMONES")
+                print('Ingrese una habilidad aceptable [1-20]: ')
     except Exception as ex:
         print(ex)
-#Pide al usuario ingresar el tipo de pokemon, invoca a la funcion buscar_por_tipo 
-def opcion5():
-    tipos =['normal','fighting','flying','poison','ground','rock','bug','ghost','steel','fire',
-    'water','grass','electric','psychic','ice','dragon','dark','fairy']
-    print("=================== Tipo de pokemones ====================")
-    print(str(tipos))
-    tipo = True
-    while tipo not in tipos:
-        tipo = input("Ingrese un tipo de pokemon o presione enter para salir:")
-        if tipo == '':
-            break
-        if tipo in tipos:
-            buscar_por_tipo(tipo)
-        else:
-            print("Tipo no valido")
-
-
-
 
 def pedirNumeroEntero():
     correcto=False
@@ -292,10 +328,11 @@ def pedirNumeroEntero():
         except ValueError:
             print('Error, introduce un numero entero') 
     return num
+
 def menu_principal():
     opcion = 0
     while opcion != range (1,7):
-        print('================= TAREA 2 ===================')
+        print('\n================= TAREA 2 ===================')
         print('==============Menu principal=================')
         print('')
         print("1.  Listar pokemons por generación")
@@ -309,39 +346,49 @@ def menu_principal():
         opcion = pedirNumeroEntero()
         return opcion
 def main():
+    def clear():
+        if name == 'nt': 
+            x = system('cls') 
+        else: 
+            x = system('clear')
     while True:
         opcion = menu_principal()
         if opcion == 1:
-            os.system('cls')
+            clear()
             print ("Opcion 1")
             opcion1()
-            os.system('pause')
+            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
+            clear()
         elif opcion == 2:
-            os.system('cls')
+            clear()
             print ("Opcion 2")
             opcion2()
-            os.system('pause')
+            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
+            clear()
         elif opcion == 3:
-            os.system('cls')
+            clear()
             print("Opcion 3")
             opcion3()
-            os.system('pause')
+            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
+            clear()
         elif opcion == 4:
-            os.system('cls')
+            clear()
             print("Opcion 4")
             opcion4()
-            os.system('pause')
+            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
+            clear()
         elif opcion == 5:
-            os.system('cls')
+            clear()
             print("Opcion 5")
             opcion5()
-            os.system('pause')
+            os.system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
+            clear()
         elif opcion == 6:
             print("SALIR")
             break       
         else:
-            os.system('cls')
-            print("Ingresa un nuevo numero :")
+            clear()
+            print("\nIngresa un nuevo numero :")
     
 if __name__ == '__main__':
     main()
