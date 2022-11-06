@@ -214,16 +214,16 @@ def opcion5(lista_libros: list[Libro]) -> Libro:
     while opcion not in (1,2):
         print("1.  Buscar por titulo")
         print("2.  Buscar por ISBN")
-        print("Ingrese 1 o 2 ")
+        print("\nIngrese 1 o 2 ")
         opcion = pedirNumeroEntero()
 
     if opcion == 1:
-        titulo = input("Ingrese el titulo a buscar :")
+        titulo = input("\nIngrese el titulo a buscar :")
         libro1 = buscar_por_titulo(titulo,lista_libros)
         return libro1
 
     elif opcion == 2:
-        isbn = input("Ingrese el ISBN a buscar:")
+        isbn = input("\nIngrese el ISBN a buscar:")
         libro1 = buscar_por_isbn(isbn,lista_libros)
         return libro1
     else: 
@@ -232,7 +232,7 @@ def opcion8(lista_libros: list[Libro])-> list[Libro]:
     libros_encontrados = []
     opcion = 0
     while opcion not in range(1,10):
-        print("Ingrese el numero de autores del libro que desea buscar: ")
+        print("\nIngrese el numero de autores del libro que desea buscar: ")
         opcion = pedirNumeroEntero()
         libros_encontrados = buscar_por_n_autores(lista_libros,opcion)
         return libros_encontrados
@@ -247,14 +247,14 @@ def actualizar_libro(libro, id: int,titulo,genero,isbn,editorial,autor) -> Libro
     return libro
 
 def opcion9(lista_libros : list[Libro]) -> bool:
-    print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
+    print("\nPor favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
     opcion = 0
     libro = None
     while libro == None:
         opcion = pedirNumeroEntero() 
         libro = buscar_por_id(opcion,lista_libros)
         if libro:
-            titulo=input("Ingrese nuevo titulo: ")
+            titulo=input("\nIngrese nuevo titulo: ")
             genero=input("Ingrese nuevo genero: ")
             isbn=input("Ingrese nuevo isbn: ")
             editorial=input("Ingrese nuevo editorial: ")
@@ -276,8 +276,8 @@ def opcion9(lista_libros : list[Libro]) -> bool:
         elif opcion == 0:
             return False
         else:
-            print("ID no valido")
-            print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
+            print("\nID no valido")
+            print("\nPor favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
 
 def opcion3(lista_libros: list[Libro]):
 
@@ -402,6 +402,7 @@ def main():
 
     def pause():
         if name == 'nt':
+            print("\nPresione una tecla para continuar ...")
             y = system('pause')
         else:
             y = system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
