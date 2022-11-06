@@ -228,6 +228,9 @@ def opcion4():
     except Exception as ex:
         print(ex)
 
+def opcion5():
+    pass
+
 def pedirNumeroEntero():
     correcto=False
     num=0
