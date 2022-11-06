@@ -71,8 +71,10 @@ class Libro:
         else:
             self.__autor= [autor] 
 
+    def add_autor(self,autor : str) :
+        self.__autor.append(autor)
+
     def __del__(self):
-        print("objeto eliminado")
         pass
 
 
@@ -157,10 +159,30 @@ def buscar_por_titulo(titulo: str, list_libros: list[Libro]) -> Libro:
         if titulo.strip()== l.titulo:
             return l
     return None
+
 def buscar_por_id(id: int, list_libros: list[Libro]) -> Libro:
     for l in list_libros:
         if id == l.id:
             return l
+    return None
+
+def buscar_por_autor(autor7: str, lista_libros7: list[Libro]) -> Libro:
+    for l7 in lista_libros7:
+        for autor in l7.autor:
+            if autor7.strip() == autor:
+                return l7
+    return None
+
+def buscar_por_editorial(editorial7: str, lista_libros7: list[Libro]) -> Libro:
+    for l7 in lista_libros7:
+        if editorial7.strip() == l7.editorial:
+            return l7
+    return None
+
+def buscar_por_genero(genero7: str, lista_libros7: list[Libro]) -> Libro:
+    for l7 in lista_libros7:
+        if genero7.strip() == l7.genero:
+            return l7
     return None
 
 def opcion1() -> list[Libro]:
@@ -228,6 +250,26 @@ def opcion9(lista_libros : list[Libro]) -> bool:
             print("ID no valido")
             print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
 
+def opcion3(lista_libros: list[Libro]):
+
+    print("\nIngrese los datos del libro para su agregacion.\n")
+    titulo3 = input('Ingrese titulo: ')
+    genero3 = input('Ingrese genero: ')
+    isbn3 = input('Ingrese codigo isbn: ')
+    editorial3 = input('Ingrese editorial: ')
+    libro3 = Libro(titulo3,genero3,isbn3,editorial3)
+    while True:
+        autor = input('Ingrese autor: ')
+        libro3.add_autor(autor)
+        valor=input('Desea agregar otro autor? (S/N): ')
+        if valor.lower() == 's':
+            True
+        else:
+            break
+    lista_libros.append(libro3)
+    
+    return lista_libros
+
 def opcion4(list_libros :list[Libro]):
     listar_libros(list_libros)
     print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
@@ -245,6 +287,40 @@ def opcion4(list_libros :list[Libro]):
         else:
             print("ID no valido")
             print("Por favor ingrese una ID valido (numero) del libro a editar o 0 para salir:")
+
+
+def opcion7(lista_libros):
+    libro7 : Libro
+    opcion7=0
+    while opcion7 not in [1,2,3]:
+        print('\nIngrese una opcion para su busqueda: ')
+        print('1. Buscar por autor: ')
+        print('2. Buscar por editorial: ')
+        print('3. Buscar por genero: ')
+        valor = input('Ingrese numero de opcion: ')
+        if valor.isnumeric():
+            if int(valor) in range (1,4):
+                for i in range(1,4):
+                    if i == int(valor):
+                        valor = int(valor)
+                break
+            else:
+                print('\nEl valor ingresado no es correcto.')
+        else:
+            print('\nEl valor ingresado no es correcto.')
+    
+    if valor == 1:
+        autor7 = input('Ingrese el autor a buscar: ')
+        libro7 = buscar_por_autor(autor7, lista_libros)
+        return libro7
+    elif valor == 2:
+        editorial7 = input('Ingrese una editorial a buscar: ')
+        libro7 = buscar_por_editorial(editorial7, lista_libros)
+        return libro7
+    else:
+        genero7 = input('Ingrese genero a buscar: ')
+        libro7 = buscar_por_genero(genero7, lista_libros)
+        return libro7
 
 
 
@@ -324,6 +400,7 @@ def main():
         elif opcion == 3:
             os.system('cls')
             print("Opcion 3")
+            opcion3(lista_libros)
             os.system('pause')
         elif opcion == 4:
             os.system('cls')
@@ -350,6 +427,11 @@ def main():
         elif opcion == 7:
             os.system('cls')
             print("Opcion 7")
+            libro7 = opcion7(lista_libros)
+            if libro7 == None:
+                print('No se encontró libro con el valor ingresado')
+            else:
+                print(f'{libro7.titulo}    |    {libro7.genero} | {libro7.isbn}  |  {libro7.editorial}  | {libro7.autor}')
             os.system('pause')
         elif opcion == 8:
             os.system('cls')
