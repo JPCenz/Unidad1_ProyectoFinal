@@ -62,7 +62,7 @@ class Libro:
         return self.__autor  
     @autor.setter
     def autor(self, autor :str):
-        self.__autor=self.__autor.append(autor)
+        # self.__autor=self.__autor.append(autor)
         autor = autor.strip()
         lista_temp =[]
         for a in autor.split(sep=","):
@@ -145,62 +145,48 @@ def buscar_por_id(id: int, list_libros: list[Libro]) -> Libro:
             return l
     return None
 
-def buscar_por_isbn(isbn: str, list_libros: list[Libro]) -> Libro:
+def buscar_por_isbn(isbn: str, list_libros: list[Libro]) -> list[Libro]:
     lista_isbn :list [Libro]= []
     for l in list_libros:
         if isbn.strip()== l.isbn:
             lista_isbn.append(l)
 
-    if lista_isbn != None:
-        return lista_isbn
-    else:
-        return None
+    return lista_isbn
 
-def buscar_por_titulo(titulo: str, list_libros: list[Libro]) -> Libro:
+
+def buscar_por_titulo(titulo: str, list_libros: list[Libro]) -> list[Libro]:
     lista_titulo :list [Libro]= []
     for l in list_libros:
         if titulo.strip()== l.titulo:
             lista_titulo.append(l)
 
-    if lista_titulo != None:
-        return lista_titulo
-    else:
-        return None
+    return lista_titulo
 
 
-def buscar_por_autor(autor7: str, lista_libros7: list[Libro]) -> Libro:
+
+def buscar_por_autor(autor7: str, lista_libros7: list[Libro]) -> list[Libro]:
     lista_igual_autor :list [Libro]= []
     for l7 in lista_libros7:
         for autor in l7.autor:
             if autor7.strip() == autor:
                 lista_igual_autor.append(l7)
+    return lista_igual_autor
                 
-    if lista_igual_autor != None:
-        return lista_igual_autor
-    else:
-        return None
 
-def buscar_por_editorial(editorial7: str, lista_libros7: list[Libro]) -> Libro:
+def buscar_por_editorial(editorial7: str, lista_libros7: list[Libro]) -> list[Libro]:
     lista_editorial :list [Libro]= []
     for l7 in lista_libros7:
         if editorial7.strip() == l7.editorial:
             lista_editorial.append(l7)
+    return lista_editorial
 
-    if lista_editorial != None:
-        return lista_editorial
-    else:
-        return None
-
-def buscar_por_genero(genero7: str, lista_libros7: list[Libro]) -> Libro:
+def buscar_por_genero(genero7: str, lista_libros7: list[Libro]) -> list[Libro]:
     lista_genero :list [Libro]= []
     for l7 in lista_libros7:
         if genero7.strip() == l7.genero:
             lista_genero.append(l7)
+    return lista_genero
 
-    if lista_genero != None:
-        return lista_genero
-    else:
-        return None
 
 def opcion1() -> list[Libro]:
     print("Leyendo archivo libros.csv...")
@@ -220,14 +206,16 @@ def opcion5(lista_libros: list[Libro]) -> Libro:
     if opcion == 1:
         titulo = input("\nIngrese el titulo a buscar :")
         libro1 = buscar_por_titulo(titulo,lista_libros)
-        return libro1
+        # return libro1
 
     elif opcion == 2:
         isbn = input("\nIngrese el ISBN a buscar:")
         libro1 = buscar_por_isbn(isbn,lista_libros)
-        return libro1
-    else: 
-        return None
+    return libro1
+    #     return libro1
+    # else: 
+    #     return None
+
 def opcion8(lista_libros: list[Libro])-> list[Libro]:
     libros_encontrados = []
     opcion = 0
@@ -259,16 +247,33 @@ def opcion9(lista_libros : list[Libro]) -> bool:
             isbn=input("Ingrese nuevo isbn: ")
             editorial=input("Ingrese nuevo editorial: ")
             #autor=input("Ingrese nuevo autor (si son mas de uno separalo con comas): ")
-            l_autor = []
+            list_autor = []
+            autor = input('Ingrese autor: ')
+            list_autor.append(autor)
             while True:
-                autor_x = input('Ingrese autor: ')
-                l_autor.append(autor_x)
-                valor=input('Desea agregar otro autor? (S/N): ')
-                if valor.lower() == 's':
-                    True
-                else:
-                    autor = ','.join(l_autor)
+                valor=input('Desea agregar otro autor? (S/N): ').lower()
+                if valor == 's':
+                    autor = input('Ingrese autor: ')
+                    list_autor.append
+                    continue
+                elif valor == 'n':
                     break
+                else:
+                    print("Incorrecto")
+                    continue
+            autor = ','.join(list_autor)
+
+
+            
+            # while True:
+            #     autor_x = input('Ingrese autor: ')
+            #     l_autor.append(autor_x)
+            #     valor=input('Desea agregar otro autor? (S/N): ')
+            #     if valor.lower() == 's':
+            #         True
+            #     else:
+            #         autor = ','.join(l_autor)
+            #         break
 
 
             actualizar_libro(libro,opcion,titulo,genero,isbn,editorial,autor)
@@ -287,15 +292,21 @@ def opcion3(lista_libros: list[Libro]):
     isbn3 = input('Ingrese codigo isbn: ')
     editorial3 = input('Ingrese editorial: ')
     libro3 = Libro(titulo3,genero3,isbn3,editorial3)
-    
+    autor = input('Ingrese autor: ')
+    libro3.add_autor(autor)
     while True:
-        autor = input('Ingrese autor: ')
-        libro3.add_autor(autor)
-        valor=input('Desea agregar otro autor? (S/N): ')
-        if valor.lower() == 's':
-            True
-        else:
+        # autor = input('Ingrese autor: ')
+        # libro3.add_autor(autor)
+        valor=input('Desea agregar otro autor? (S/N): ').lower()
+        if valor == 's':
+            autor = input('Ingrese autor: ')
+            libro3.add_autor(autor)
+            continue
+        elif valor == 'n':
             break
+        else:
+            print("Incorrecto")
+            continue
     lista_libros.append(libro3)
     print("\nEl libro se agrego correctamente.")
     return lista_libros
@@ -319,7 +330,7 @@ def opcion4(list_libros :list[Libro]):
             print("\nPor favor ingrese una ID valido (numero) del libro a eliminar o presione 0 para salir:")
 
 
-def opcion7(lista_libros):
+def opcion7(lista_libros) ->list[Libro]:
     libro7 : Libro
     opcion7=0
     while opcion7 not in [1,2,3]:
@@ -353,12 +364,12 @@ def opcion7(lista_libros):
         return libro7
 
 
-def header():
-    print("==============================  Libros  ===============================================")
-    print("Titulo         |   Genero  |        ISBN    |   Editorial   |   Autor (es)")
+# def header():
+#     print("==============================  Libros  ===============================================")
+#     print("Titulo         |   Genero  |        ISBN    |   Editorial   |   Autor (es)")
 
-def imprimir_resultados(libro:Libro):
-    print(f'{libro.titulo}    |    {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
+# def imprimir_resultados(libro:Libro):
+#     print(f'{libro.titulo}    |    {libro.genero} | {libro.isbn}  |  {libro.editorial}  | {libro.autor}')
 
 
 #pide un numero entero al usuario y valida si es entero
@@ -392,29 +403,32 @@ def menu_principal():
         print ("Elige una opcion :")
         opcion = pedirNumeroEntero()
         return opcion
+def clear():
+    if name == 'nt': 
+        x = system('cls') 
+    else: 
+        x = system('clear')
+
+def pause():
+    if name == 'nt':
+        y = system('pause')
+    else:
+        y = system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
+        clear()
+
 def main():
-
-    def clear():
-        if name == 'nt': 
-            x = system('cls') 
-        else: 
-            x = system('clear')
-
-    def pause():
-        if name == 'nt':
-            print("\nPresione una tecla para continuar ...")
-            y = system('pause')
-        else:
-            y = system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
-            clear()
     lista_libros=[]
     while True:
         opcion = menu_principal()
         if opcion == 1:
             clear()
             print ("Opcion 1")
-            lista_libros = opcion1() 
-            print(f"cantidad de libros cargados: {len(lista_libros)}")
+            libros_csv = opcion1()
+            if libros_csv == None:
+                print("No se encontró el archivo libros.csv, por favor agreguelo")
+            else:
+                lista_libros = libros_csv
+                print(f"cantidad de libros cargados: {len(lista_libros)}")
             pause()
         elif opcion == 2:
             clear()
@@ -434,14 +448,17 @@ def main():
         elif opcion == 5:
             clear()
             print("Opcion 5")
-            libro = opcion5(lista_libros)
+            libros = opcion5(lista_libros)
             print("\nResultados :")
-            header()
-            for li in libro:
-                if libro == None:
-                    print("No se encontraron coincidencias")
-                else:
-                    imprimir_resultados(li)
+            if len(libros) <1:
+                print("No se encontraron resultados")
+            else:
+                listar_libros(libros)
+            # if libro == None:
+            #     print("No se encontraron coincidencias")
+            # else:
+            #     header()
+            #     imprimir_resultados(libro)
             pause()
         elif opcion == 6:
             clear()
@@ -454,13 +471,15 @@ def main():
             clear()
             print("Opcion 7")
             libro7 = opcion7(lista_libros)
-            print("\nResultados :")
-            header()
-            for lib in libro7:
-                if lib == None:
-                    print('No se encontró libro con el valor ingresado')
-                else:
-                    imprimir_resultados(lib)
+            if len(libro7) <1:
+                print("No se encontraron resultados")
+            else:
+                listar_libros(libro7)
+            # for lib in libro7:
+            #     if lib == None:
+            #         print('No se encontró libro con el valor ingresado')
+            #     else:
+            #         imprimir_resultados(lib)
             pause()
         elif opcion == 8:
             clear()
@@ -499,6 +518,7 @@ def main():
             pause()
         elif opcion == 11:
             print("SALIR")
+            print("Hasta pronto")
             break       
         else:
             clear()
