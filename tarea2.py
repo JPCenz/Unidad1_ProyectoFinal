@@ -354,7 +354,6 @@ def main():
 
     def pause():
         if name == 'nt':
-            print("\nPresione una tecla para continuar ...")
             y = system('pause')
         else:
             y = system("""bash -c 'read -s -n 1 -p "\nPresione una tecla para continuar ..."'""")
