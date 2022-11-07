@@ -254,7 +254,7 @@ def opcion9(lista_libros : list[Libro]) -> bool:
                 valor=input('Desea agregar otro autor? (S/N): ').lower()
                 if valor == 's':
                     autor = input('Ingrese autor: ')
-                    list_autor.append
+                    list_autor.append(autor)
                     continue
                 elif valor == 'n':
                     break
